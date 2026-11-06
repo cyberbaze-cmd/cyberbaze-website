@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cyberbaze — AI Automation, Web &amp; UI/UX, Brand and Growth</title>
+<meta name="description" content="Cyberbaze builds AI automation, modern websites and digital products, brand identity systems and growth engines for scaling companies.">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23D9251D'/%3E%3Ccircle cx='24' cy='8' r='6' fill='%238F282B'/%3E%3Ccircle cx='8' cy='24' r='6' fill='%23B02722'/%3E%3Ccircle cx='24' cy='24' r='6' fill='%23D9251D'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  if (window.tailwind) tailwind.config = {
+    darkMode: 'class',
+    theme: {
+      extend: {
+        fontFamily: {
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+          display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+        },
+        colors: {
+          brand: { DEFAULT: '#D9251D', ember: '#B02722', ox: '#8F282B', flare: '#FF5A4E' }
+        },
+        transitionTimingFunction: {
+          expo: 'cubic-bezier(0.16, 1, 0.3, 1)',
+          quart: 'cubic-bezier(0.76, 0, 0.24, 1)'
+        },
+        letterSpacing: { tightest: '-0.045em' }
+      }
+    }
+  };
+</script>
+<script src="https://unpkg.com/lenis@1/dist/lenis.min.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+  :root { --ease-expo: cubic-bezier(0.16, 1, 0.3, 1); }
+  html { background: #0a0a0a; color-scheme: dark; }
+  body { font-family: Inter, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  ::selection { background: #D9251D; color: #fff; }
+
+  /* Lenis recommended */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+  .lenis.lenis-stopped { overflow: hidden; }
+
+  /* Background grid */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px);
+    background-size: 72px 72px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  }
+
+  /* Scroll progress */
+  #progress { transform-origin: 0 50%; transform: scaleX(0); }
+
+  /* Reveal system */
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .9s var(--ease-expo), transform .9s var(--ease-expo); transition-delay: var(--d, 0ms); will-change: opacity, transform; }
+  .reveal.is-in { opacity: 1; transform: none; }
+  .line-mask { display: block; overflow: hidden; padding-bottom: 0.06em; }
+  .line-mask > span { display: block; transform: translateY(105%); transition: transform 1s var(--ease-expo); transition-delay: var(--d, 0ms); }
+  .is-in .line-mask > span, .line-mask.is-in > span { transform: none; }
+
+  /* Pulsing status dot */
+  .pulse-dot { position: relative; }
+  .pulse-dot::after { content: ''; position: absolute; inset: 0; border-radius: 9999px; background: inherit; animation: ping 2s cubic-bezier(0,0,.2,1) infinite; }
+  @keyframes ping { 75%, 100% { transform: scale(2.6); opacity: 0; } }
+
+  /* Ticker */
+  .ticker { -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+  .ticker-track { display: flex; width: max-content; animation: ticker 48s linear infinite; }
+  .ticker:hover .ticker-track { animation-play-state: paused; }
+  @keyframes ticker { to { transform: translateX(-50%); } }
+
+  /* Spotlight / tilt cards */
+  .spot { position: relative; isolation: isolate; transform-style: preserve-3d; transition: transform .6s var(--ease-expo), border-color .4s ease; }
+  .spot::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; z-index: -1; opacity: 0; transition: opacity .4s ease;
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgba(255,90,78,.75), rgba(255,90,78,0) 45%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+  .spot::after { content: ''; position: absolute; inset: 0; border-radius: inherit; z-index: -1; opacity: 0; transition: opacity .4s ease; pointer-events: none;
+    background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 50%), rgba(217,37,29,.10), transparent 40%); }
+  .spot:hover::before, .spot:hover::after { opacity: 1; }
+  .spot.reveal { transition: opacity .9s var(--ease-expo) var(--d, 0ms), transform .9s var(--ease-expo) var(--d, 0ms), border-color .4s ease; }
+  .spot.reveal.is-in { transition: opacity .9s var(--ease-expo) var(--d, 0ms), transform .6s var(--ease-expo), border-color .4s ease; }
+
+  /* Magnetic */
+  .magnetic { transition: transform .5s var(--ease-expo); will-change: transform; }
+  .magnetic .mag-inner { display: inline-flex; align-items: center; gap: .5rem; transition: transform .5s var(--ease-expo); }
+
+  /* Button label roll */
+  .roll { position: relative; display: inline-block; overflow: hidden; height: 1.2em; line-height: 1.2em; vertical-align: middle; }
+  .roll > span { display: block; transition: transform .45s var(--ease-expo); }
+  .roll > span + span { position: absolute; left: 0; top: 100%; }
+  a:hover .roll > span, button:hover .roll > span { transform: translateY(-100%); }
+
+  /* Link underline */
+  .u-link { background: linear-gradient(currentColor, currentColor) 0 100% / 0 1px no-repeat; transition: background-size .45s var(--ease-expo); }
+  .u-link:hover { background-size: 100% 1px; }
+
+  /* Mobile drawer */
+  #drawer { clip-path: inset(0 0 100% 0); transition: clip-path .7s cubic-bezier(0.76, 0, 0.24, 1); }
+  #drawer.open { clip-path: inset(0 0 0 0); }
+  #drawer .d-item { opacity: 0; transform: translateY(28px); transition: opacity .6s var(--ease-expo), transform .6s var(--ease-expo); }
+  #drawer.open .d-item { opacity: 1; transform: none; transition-delay: calc(200ms + var(--i) * 60ms); }
+  .burger span { transition: transform .5s var(--ease-expo), opacity .3s ease; }
+  .burger[aria-expanded="true"] span:nth-child(1) { transform: translateY(4px) rotate(45deg); }
+  .burger[aria-expanded="true"] span:nth-child(2) { transform: translateY(-4px) rotate(-45deg); }
+
+  /* Process path */
+  #path-fill { transform-origin: 0 0; }
+
+  /* FAQ */
+  .faq-panel { height: 0; overflow: hidden; transition: height .55s var(--ease-expo); }
+  .faq-icon { transition: transform .55s var(--ease-expo); }
+  .faq-item.open .faq-icon { transform: rotate(45deg); }
+
+  /* Workflow pulse in card 1 */
+  .flow-dot { offset-path: none; animation: flow 3.6s cubic-bezier(.65,0,.35,1) infinite; }
+  @keyframes flow { 0% { left: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
+
+  :focus-visible { outline: 2px solid #FF5A4E; outline-offset: 3px; border-radius: 6px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .line-mask > span { opacity: 1 !important; transform: none !important; transition: none !important; }
+    .ticker-track, .flow-dot, .pulse-dot::after { animation: none !important; }
+    .spot, .magnetic, .magnetic .mag-inner { transition: none !important; transform: none !important; }
+  }
+</style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 overflow-x-hidden">
+
+<!-- Static mark as reusable symbol -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+<linearGradient id="sm-g1" gradientUnits="userSpaceOnUse" x1="1" y1="777" x2="491" y2="1"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="sm-g2" gradientUnits="userSpaceOnUse" x1="267" y1="203" x2="763" y2="1"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="sm-g3" gradientUnits="userSpaceOnUse" x1="565" y1="777" x2="767" y2="289"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="sm-g4" gradientUnits="userSpaceOnUse" x1="1" y1="777" x2="203" y2="575"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+</defs>
+  <symbol id="cb-mark" viewBox="0 0 766 777"><path d="M392.3 774.3C387.7 774.4 382.9 774.2 378.3 773.7C373.7 773.1 369 772.2 364.5 771C360 769.8 355.5 768.3 351.2 766.4C346.9 764.6 342.7 762.4 338.8 760C334.8 757.5 330.9 754.8 327.3 751.8C323.7 748.8 320.3 745.6 317.2 742.1C314 738.7 311.1 734.9 308.5 731.1C305.9 727.2 303.5 723.1 301.5 718.9C299.4 714.7 297.7 710.3 296.2 705.9C294.8 701.4 293.7 696.8 292.9 692.2C292.2 687.6 291.7 682.9 291.6 678.2C291.5 673.6 291.7 668.8 292.3 664.2C292.9 659.6 293.8 654.9 295 650.4C296.2 645.9 297.7 641.4 299.6 637.1C301.4 632.8 303.5 628.6 305.9 624.6C308.2 620.6 310.9 616.7 313.7 612.9C316.4 609.1 319.5 605.5 322.4 601.9C325.4 598.3 328.5 594.8 331.4 591.1C334.3 587.4 337.3 583.8 339.8 579.9C342.4 575.9 344.8 571.9 346.7 567.6C348.6 563.4 350.2 558.9 351.4 554.4C352.5 549.8 353.2 545.2 353.6 540.5C354 535.9 354 531.1 353.7 526.5C353.4 521.8 352.7 517.1 351.6 512.6C350.5 508 349 503.5 347.1 499.3C345.2 495 342.9 490.9 340.3 487C337.8 483.1 334.8 479.4 331.8 475.8C328.8 472.2 325.6 468.8 322.4 465.4C319.1 462 315.8 458.7 312.4 455.5C309 452.3 305.5 449.1 301.8 446.2C298.2 443.3 294.4 440.4 290.4 438C286.4 435.6 282.2 433.4 277.9 431.7C273.5 430 269 428.7 264.4 427.7C259.8 426.8 255.1 426.2 250.5 426C245.8 425.8 241.1 425.9 236.4 426.4C231.8 426.9 227.1 427.7 222.6 428.9C218.1 430.1 213.7 431.7 209.4 433.7C205.2 435.7 201.2 438.2 197.3 440.7C193.4 443.3 189.7 446.3 186.1 449.2C182.4 452.1 178.9 455.3 175.3 458.3C171.7 461.2 168.1 464.2 164.3 467C160.5 469.7 156.6 472.3 152.5 474.6C148.4 477 144.2 479.1 139.9 480.8C135.6 482.6 131.1 484.1 126.6 485.3C122 486.5 117.4 487.3 112.8 487.8C108.1 488.4 103.4 488.5 98.7 488.4C94.1 488.2 89.4 487.7 84.8 486.9C80.2 486.1 75.6 484.9 71.1 483.4C66.7 482 62.3 480.2 58.2 478.1C54 476 49.9 473.6 46.1 470.9C42.2 468.3 38.5 465.3 35.1 462.1C31.7 459 28.5 455.5 25.5 451.9C22.6 448.2 19.9 444.4 17.5 440.4C15.1 436.3 13 432.1 11.2 427.8C9.4 423.5 7.9 419 6.7 414.5C5.6 410 4.7 405.3 4.2 400.7C3.7 396 3.5 391.3 3.7 386.6C3.8 382 4.3 377.3 5.2 372.7C6 368.1 7.1 363.5 8.6 359C10.1 354.6 11.9 350.2 13.9 346C15.9 341.8 18.3 337.8 20.8 333.8C23.4 329.9 26.2 326.1 29.1 322.4C32 318.7 35.1 315.2 38 311.6C41 308 44.1 304.5 46.9 300.7C49.7 297 52.5 293.1 54.8 289.1C57.2 285 59.2 280.8 60.9 276.4C62.5 272 63.7 267.5 64.6 262.9C65.4 258.3 65.9 253.6 66.1 248.9C66.2 244.2 66 239.5 65.5 234.9C64.9 230.2 64 225.6 62.7 221.1C61.4 216.6 59.6 212.2 57.6 208C55.5 203.8 53 199.8 50.4 196C47.7 192.1 44.7 188.5 41.8 184.9C38.8 181.2 35.7 177.7 32.7 174.1C29.8 170.4 26.8 166.8 24.1 163C21.4 159.2 18.9 155.2 16.6 151.1C14.3 147 12.3 142.8 10.6 138.4C8.9 134.1 7.4 129.6 6.4 125C5.3 120.5 4.5 115.8 4.1 111.2C3.6 106.5 3.5 101.8 3.8 97.1C4 92.5 4.6 87.8 5.4 83.2C6.3 78.6 7.6 74 9.1 69.6C10.6 65.2 12.5 60.9 14.7 56.7C16.8 52.6 19.3 48.6 22 44.8C24.7 41 27.7 37.3 31 33.9C34.2 30.6 37.7 27.4 41.4 24.5C45.1 21.6 49 19 53 16.7C57.1 14.4 61.3 12.3 65.7 10.6C70 8.9 74.5 7.4 79.1 6.3C83.6 5.3 88.3 4.5 92.9 4.1C97.6 3.6 102.3 3.5 107 3.8C111.6 4 116.3 4.6 120.9 5.5C125.5 6.4 130.1 7.6 134.5 9.1C138.9 10.7 143.2 12.6 147.4 14.7C151.5 16.9 155.5 19.3 159.3 22.1C163.1 24.8 166.8 27.8 170.1 31C173.5 34.3 176.7 37.8 179.6 41.5C182.4 45.1 185.1 49 187.4 53.1C189.8 57.1 191.9 61.4 193.6 65.7C195.4 70 196.9 74.5 198 79C199.2 83.6 200 88.2 200.5 92.9C200.9 97.5 201 102.2 200.8 106.9C200.5 111.6 199.9 116.3 199 120.8C198 125.4 196.7 130 195.2 134.4C193.6 138.8 191.7 143.1 189.6 147.2C187.5 151.4 185 155.4 182.4 159.3C179.8 163.2 177 166.9 174.1 170.6C171.2 174.3 168.1 177.8 165.1 181.4C162.1 185.1 159 188.6 156.2 192.4C153.5 196.1 150.8 200 148.5 204.1C146.2 208.2 144.2 212.5 142.7 216.9C141.1 221.3 140 225.9 139.2 230.5C138.4 235.1 138 239.8 137.9 244.5C137.8 249.1 138.1 253.8 138.7 258.5C139.3 263.1 140.3 267.7 141.7 272.2C143.1 276.6 144.9 281 147 285.2C149.2 289.3 151.8 293.3 154.5 297.1C157.2 300.9 160.3 304.4 163.4 307.9C166.5 311.4 169.8 314.8 173.1 318.1C176.4 321.4 179.8 324.7 183.3 327.9C186.7 331 190.3 334.1 194 336.8C197.8 339.6 201.7 342.3 205.9 344.4C210 346.6 214.3 348.5 218.8 350C223.2 351.4 227.8 352.4 232.4 353.1C237.1 353.8 241.8 354.1 246.5 354.1C251.1 354.1 255.9 353.7 260.5 353C265.1 352.3 269.7 351.2 274.1 349.7C278.5 348.2 282.8 346.2 287 344C291.1 341.8 295 339.1 298.8 336.4C302.5 333.7 306.1 330.6 309.7 327.6C313.3 324.7 316.8 321.5 320.5 318.6C324.2 315.7 327.9 312.8 331.8 310.2C335.7 307.6 339.7 305.1 343.8 303C348 300.9 352.3 298.9 356.7 297.4C361.1 295.8 365.7 294.5 370.2 293.6C374.8 292.7 379.5 292 384.2 291.8C388.8 291.5 393.6 291.5 398.2 291.9C402.9 292.3 407.5 293.1 412.1 294.1C416.6 295.2 421.2 296.6 425.5 298.3C429.9 299.9 434.1 302 438.2 304.2C442.3 306.5 446.2 309.1 449.9 312C453.6 314.8 457.2 318 460.4 321.3C463.7 324.7 466.7 328.3 469.5 332C472.3 335.8 474.8 339.8 477 343.9C479.2 348.1 481.1 352.4 482.7 356.8C484.3 361.2 485.6 365.7 486.5 370.3C487.5 374.9 488.1 379.5 488.4 384.2C488.7 388.9 488.6 393.6 488.2 398.2C487.8 402.9 487.1 407.6 486 412.1C484.9 416.7 483.5 421.2 481.8 425.5C480.2 429.9 478.1 434.2 475.9 438.3C473.7 442.4 471.1 446.3 468.5 450.2C465.8 454 462.8 457.7 459.9 461.3C457 465 453.8 468.5 450.9 472.1C447.9 475.7 444.9 479.3 442.2 483.2C439.5 487 437 491 434.9 495.1C432.8 499.3 431 503.7 429.6 508.2C428.3 512.6 427.3 517.3 426.7 521.9C426.2 526.5 426 531.3 426.1 535.9C426.3 540.6 426.8 545.3 427.7 549.9C428.6 554.5 429.8 559 431.5 563.4C433.2 567.7 435.3 572 437.7 576C440.1 580 442.9 583.8 445.7 587.5C448.5 591.3 451.7 594.8 454.6 598.4C457.6 602 460.7 605.5 463.6 609.3C466.4 613 469.2 616.7 471.7 620.7C474.2 624.6 476.6 628.7 478.6 633C480.6 637.2 482.4 641.6 483.8 646C485.2 650.4 486.4 655 487.2 659.6C488 664.2 488.4 668.9 488.5 673.6C488.7 678.3 488.4 683 487.9 687.6C487.3 692.3 486.4 696.9 485.1 701.4C483.9 705.9 482.4 710.4 480.5 714.7C478.7 719 476.5 723.2 474 727.2C471.6 731.1 468.9 735 465.9 738.6C462.9 742.2 459.7 745.6 456.2 748.8C452.8 751.9 449 754.8 445.2 757.5C441.3 760.1 437.2 762.4 433 764.5C428.8 766.5 424.4 768.3 420 769.7C415.5 771.1 410.9 772.2 406.3 773C401.7 773.8 397 774.2 392.3 774.3Z" fill="url(#sm-g1)"/><path d="M666 200.3C661.4 200.5 656.6 200.4 652 199.9C647.4 199.4 642.7 198.6 638.2 197.5C633.7 196.4 629.2 194.9 624.9 193.2C620.6 191.4 616.4 189.4 612.3 187.1C608.3 184.8 604.3 182.2 600.5 179.5C596.7 176.8 593.1 173.9 589.5 170.9C585.9 168 582.4 164.8 578.8 161.9C575.1 159 571.5 156 567.7 153.4C563.8 150.8 559.8 148.3 555.6 146.2C551.5 144.2 547.1 142.5 542.6 141.2C538.1 139.9 533.5 139 528.9 138.3C524.3 137.7 519.6 137.5 514.9 137.5C510.3 137.5 505.6 137.7 501 138.4C496.4 139 491.7 139.9 487.3 141.2C482.8 142.5 478.4 144.2 474.2 146.3C470.1 148.3 466.1 150.8 462.2 153.5C458.4 156.1 454.8 159.1 451.1 162C447.5 164.9 444 168.1 440.4 171C436.8 173.9 433.2 176.9 429.4 179.6C425.6 182.3 421.6 184.9 417.6 187.2C413.5 189.4 409.3 191.5 405 193.2C400.6 195 396.2 196.4 391.6 197.5C387.1 198.6 382.5 199.5 377.9 199.9C373.2 200.4 368.5 200.5 363.9 200.3C359.2 200.1 354.5 199.6 350 198.7C345.4 197.9 340.8 196.7 336.4 195.2C332 193.7 327.7 191.9 323.5 189.8C319.4 187.7 315.3 185.2 311.5 182.6C307.7 179.9 304.1 176.9 300.7 173.7C297.3 170.6 294.1 167.1 291.2 163.5C288.3 159.8 285.6 156 283.2 152C280.8 148 278.7 143.8 276.9 139.5C275.1 135.2 273.5 130.8 272.3 126.3C271.1 121.8 270.2 117.1 269.7 112.5C269.2 107.9 269 103.2 269.1 98.5C269.3 93.9 269.9 89.2 270.7 84.6C271.6 80.1 272.8 75.5 274.3 71.1C275.8 66.7 277.7 62.4 279.8 58.2C281.9 54.1 284.3 50 286.9 46.2C289.6 42.4 292.5 38.7 295.7 35.3C298.8 31.9 302.3 28.6 305.9 25.7C309.5 22.8 313.4 20.1 317.3 17.7C321.3 15.3 325.5 13.1 329.8 11.3C334.1 9.5 338.6 8 343.1 6.8C347.6 5.7 352.2 4.8 356.8 4.3C361.4 3.7 366.2 3.5 370.8 3.7C375.5 3.8 380.1 4.3 384.7 5.1C389.3 5.8 393.9 7 398.3 8.4C402.8 9.8 407.1 11.6 411.3 13.6C415.5 15.6 419.6 17.9 423.5 20.4C427.5 22.9 431.2 25.7 434.9 28.6C438.6 31.4 442.1 34.5 445.7 37.5C449.3 40.4 452.8 43.5 456.5 46.4C460.3 49.2 464 52 468.1 54.3C472.1 56.7 476.3 58.8 480.6 60.5C484.9 62.2 489.5 63.5 494 64.5C498.6 65.4 503.2 66 507.9 66.3C512.5 66.6 517.2 66.6 521.9 66.3C526.5 66 531.2 65.5 535.8 64.5C540.3 63.6 544.9 62.3 549.2 60.6C553.5 58.9 557.7 56.8 561.7 54.4C565.8 52.1 569.5 49.3 573.3 46.5C577 43.7 580.5 40.6 584.1 37.6C587.7 34.7 591.2 31.6 594.9 28.7C598.6 25.9 602.4 23.1 606.3 20.6C610.2 18 614.3 15.7 618.5 13.7C622.7 11.7 627 9.9 631.5 8.5C635.9 7 640.5 5.9 645 5.1C649.6 4.3 654.3 3.8 659 3.7C663.6 3.5 668.3 3.7 672.9 4.2C677.6 4.8 682.2 5.6 686.7 6.8C691.2 7.9 695.7 9.5 700 11.2C704.3 13 708.5 15.2 712.5 17.5C716.5 19.9 720.3 22.6 723.9 25.6C727.5 28.5 731 31.7 734.1 35.1C737.3 38.5 740.3 42.2 742.9 46C745.6 49.9 748 53.9 750 58.1C752.1 62.2 753.9 66.6 755.4 71C756.8 75.4 758 80 758.8 84.6C759.6 89.2 760.1 93.8 760.3 98.5C760.5 103.1 760.3 107.8 759.8 112.5C759.3 117.1 758.5 121.7 757.3 126.2C756.2 130.8 754.7 135.2 752.9 139.5C751.2 143.8 749.1 148 746.7 152.1C744.3 156.1 741.6 159.9 738.7 163.6C735.8 167.2 732.6 170.6 729.2 173.8C725.8 177 722.2 180 718.4 182.6C714.5 185.3 710.5 187.7 706.3 189.8C702.2 191.9 697.9 193.7 693.4 195.2C689 196.7 684.5 197.9 679.9 198.8C675.3 199.6 670.6 200.1 666 200.3Z" fill="url(#sm-g2)"/><path d="M668.3 774.3C663.6 774.4 658.9 774.2 654.2 773.7C649.6 773.1 644.9 772.2 640.4 771C635.8 769.7 631.3 768.2 627 766.3C622.7 764.5 618.5 762.3 614.5 759.8C610.5 757.4 606.6 754.6 603 751.6C599.4 748.6 596 745.3 592.8 741.8C589.7 738.3 586.8 734.5 584.2 730.6C581.6 726.7 579.2 722.6 577.2 718.4C575.1 714.1 573.4 709.7 572 705.2C570.6 700.8 569.5 696.1 568.7 691.5C567.9 686.9 567.5 682.1 567.4 677.4C567.4 672.7 567.7 668 568.3 663.3C568.9 658.7 569.9 654 571.1 649.5C572.4 645 574 640.5 575.9 636.2C577.8 631.9 580 627.7 582.4 623.7C584.8 619.6 587.5 615.8 590.3 612C593.1 608.2 596.2 604.6 599.2 601C602.2 597.3 605.3 593.8 608.2 590.1C611.1 586.4 614.1 582.7 616.6 578.7C619.1 574.8 621.4 570.6 623.3 566.3C625.1 562 626.6 557.5 627.7 552.9C628.8 548.3 629.4 543.6 629.7 538.9C630.1 534.2 630 529.5 629.6 524.8C629.1 520.1 628.4 515.4 627.2 510.9C626 506.4 624.3 501.9 622.3 497.6C620.4 493.4 617.9 489.3 615.3 485.4C612.7 481.4 609.7 477.8 606.8 474.1C603.9 470.4 600.7 466.9 597.7 463.3C594.8 459.6 591.7 456 589 452.2C586.2 448.3 583.6 444.4 581.3 440.3C578.9 436.3 576.8 432 575 427.7C573.2 423.3 571.7 418.8 570.5 414.3C569.4 409.7 568.5 405 568 400.4C567.5 395.7 567.3 391 567.5 386.3C567.7 381.6 568.2 376.8 569.1 372.2C570 367.6 571.2 363 572.7 358.6C574.2 354.1 576.1 349.8 578.2 345.6C580.3 341.4 582.8 337.3 585.5 333.5C588.2 329.6 591.2 325.9 594.4 322.5C597.6 319.1 601.1 315.9 604.8 313C608.5 310.1 612.4 307.4 616.5 305C620.5 302.6 624.8 300.5 629.1 298.8C633.5 297 638 295.5 642.6 294.4C647.1 293.3 651.8 292.5 656.5 292C661.2 291.6 665.9 291.5 670.6 291.7C675.3 291.9 680 292.5 684.6 293.4C689.2 294.3 693.8 295.5 698.3 297.1C702.7 298.6 707.1 300.5 711.2 302.6C715.4 304.8 719.5 307.3 723.3 310C727.1 312.7 730.8 315.8 734.1 319C737.5 322.3 740.7 325.8 743.6 329.5C746.5 333.2 749.1 337.2 751.5 341.3C753.8 345.3 755.8 349.6 757.5 354C759.3 358.4 760.7 362.9 761.8 367.5C762.8 372.1 763.6 376.7 764 381.4C764.4 386.1 764.5 390.9 764.2 395.5C763.9 400.2 763.3 404.9 762.4 409.6C761.5 414.2 760.2 418.7 758.6 423.2C757.1 427.6 755.2 431.9 753 436.1C750.9 440.3 748.4 444.3 745.8 448.2C743.2 452.2 740.2 455.9 737.3 459.6C734.4 463.3 731.2 466.8 728.3 470.4C725.3 474.1 722.2 477.6 719.4 481.5C716.7 485.3 714 489.2 711.8 493.3C709.6 497.5 707.7 501.8 706.2 506.3C704.7 510.7 703.7 515.4 703 520C702.3 524.7 702 529.4 702.1 534.1C702.1 538.8 702.5 543.6 703.3 548.2C704.2 552.8 705.3 557.4 706.9 561.8C708.5 566.2 710.6 570.5 712.9 574.6C715.2 578.7 718 582.6 720.8 586.4C723.6 590.1 726.7 593.7 729.7 597.3C732.7 601 735.8 604.5 738.7 608.2C741.6 611.9 744.5 615.7 747 619.6C749.6 623.6 752 627.7 754 631.9C756.1 636.1 757.9 640.5 759.4 645C760.8 649.4 762 654 762.8 658.7C763.7 663.3 764.2 668 764.3 672.7C764.5 677.4 764.3 682.2 763.8 686.8C763.3 691.5 762.4 696.2 761.2 700.7C760 705.3 758.5 709.8 756.7 714.1C754.9 718.4 752.7 722.7 750.3 726.7C747.9 730.7 745.2 734.6 742.2 738.2C739.2 741.9 736 745.3 732.5 748.5C729 751.7 725.3 754.6 721.4 757.3C717.5 759.9 713.4 762.3 709.2 764.4C705 766.4 700.6 768.2 696.1 769.6C691.6 771.1 687 772.2 682.4 773C677.8 773.8 673 774.2 668.3 774.3Z" fill="url(#sm-g3)"/><path d="M104.3 774.3C99.7 774.4 94.9 774.2 90.3 773.7C85.7 773.1 81 772.2 76.5 771C72 769.8 67.6 768.3 63.3 766.4C59 764.6 54.8 762.4 50.8 760C46.8 757.6 42.9 754.8 39.4 751.9C35.8 748.9 32.3 745.6 29.2 742.2C26.1 738.7 23.1 735 20.5 731.1C17.9 727.3 15.5 723.2 13.5 719C11.5 714.8 9.7 710.4 8.3 705.9C6.9 701.5 5.8 696.9 5 692.3C4.2 687.7 3.8 683 3.7 678.3C3.6 673.7 3.8 668.9 4.3 664.3C4.9 659.7 5.8 655 7 650.5C8.2 646 9.7 641.5 11.6 637.2C13.4 633 15.6 628.8 18 624.8C20.4 620.8 23.2 616.9 26.2 613.3C29.1 609.7 32.4 606.3 35.8 603.2C39.3 600 43 597.1 46.9 594.5C50.8 591.9 54.8 589.5 59 587.5C63.2 585.4 67.6 583.7 72.1 582.3C76.5 580.8 81.1 579.7 85.7 578.9C90.3 578.2 95 577.7 99.7 577.6C104.3 577.5 109.1 577.7 113.7 578.3C118.3 578.8 123 579.7 127.5 580.9C132 582.2 136.5 583.7 140.7 585.6C145 587.4 149.2 589.6 153.2 592C157.2 594.4 161 597.2 164.6 600.1C168.2 603.1 171.7 606.4 174.8 609.8C177.9 613.3 180.9 617 183.5 620.9C186.1 624.7 188.5 628.8 190.5 633C192.5 637.2 194.3 641.6 195.7 646.1C197.2 650.5 198.3 655.1 199 659.7C199.8 664.3 200.3 669 200.4 673.7C200.5 678.3 200.3 683.1 199.7 687.7C199.2 692.3 198.3 697 197 701.5C195.8 706 194.3 710.4 192.4 714.7C190.6 719 188.4 723.2 186 727.2C183.6 731.2 180.8 735 177.9 738.6C174.9 742.2 171.6 745.7 168.2 748.8C164.7 751.9 161 754.9 157.1 757.5C153.3 760.1 149.2 762.5 145 764.5C140.8 766.5 136.4 768.3 132 769.7C127.5 771.1 122.9 772.2 118.3 773C113.7 773.8 109 774.2 104.3 774.3Z" fill="url(#sm-g4)"/></symbol>
+</svg>
+
+<!-- Scroll progress -->
+<div class="fixed top-0 left-0 right-0 z-[70] h-[2px] bg-transparent pointer-events-none" aria-hidden="true">
+  <div id="progress" class="h-full w-full bg-gradient-to-r from-brand-ox via-brand to-brand-flare"></div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<header id="top" class="sticky top-0 z-50 backdrop-blur-md bg-neutral-950/70 border-b border-neutral-800/80">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 h-16 sm:h-[72px] flex items-center justify-between gap-6">
+    <a href="#hero" data-scroll class="flex items-center gap-3 group" aria-label="Cyberbaze home">
+      <svg class="w-7 h-7 transition-transform duration-700 ease-expo group-hover:rotate-90" aria-hidden="true"><use href="#cb-mark"/></svg>
+      <span class="font-display font-semibold tracking-tight text-white text-[17px]">cyberbaze<span class="text-neutral-500 font-normal">.tech</span></span>
+      <span class="hidden md:inline-flex items-center gap-2 ml-2 pl-3 border-l border-neutral-800 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Available for Q4/Q1
+      </span>
+    </a>
+
+    <nav aria-label="Main" class="hidden lg:flex items-center gap-1 text-sm">
+      <a href="#capabilities" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Capabilities</a>
+      <a href="#process" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Process</a>
+      <a href="#results" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Results</a>
+      <a href="#faq" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">FAQ</a>
+    </nav>
+
+    <div class="flex items-center gap-2">
+      <a href="#contact" data-scroll class="magnetic hidden sm:inline-flex items-center rounded-full bg-white text-neutral-950 pl-5 pr-4 py-2.5 text-sm font-medium hover:bg-brand-flare hover:text-white transition-colors duration-300">
+        <span class="mag-inner"><span class="roll"><span>Start a Project</span><span>Start a Project</span></span><i data-lucide="arrow-up-right" class="w-4 h-4"></i></span>
+      </a>
+      <button id="burger" class="burger lg:hidden w-11 h-11 rounded-full border border-neutral-800 flex flex-col items-center justify-center gap-[6px] hover:border-neutral-600 transition-colors" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+        <span class="block w-4 h-px bg-white"></span>
+        <span class="block w-4 h-px bg-white"></span>
+      </button>
+    </div>
+  </div>
+
+</header>
+  <!-- Mobile drawer -->
+  <div id="drawer" class="lg:hidden fixed z-40 inset-x-0 top-16 sm:top-[72px] h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-72px)] bg-neutral-950 border-t border-neutral-800" aria-hidden="true">
+    <div class="h-full flex flex-col justify-between px-6 py-10">
+      <nav aria-label="Mobile" class="flex flex-col">
+        <a href="#capabilities" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:0">Capabilities <span class="font-mono text-xs text-neutral-500">01</span></a>
+        <a href="#process" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:1">Process <span class="font-mono text-xs text-neutral-500">02</span></a>
+        <a href="#results" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:2">Results <span class="font-mono text-xs text-neutral-500">03</span></a>
+        <a href="#faq" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:3">FAQ <span class="font-mono text-xs text-neutral-500">04</span></a>
+      </nav>
+      <div class="d-item flex flex-col gap-5" style="--i:4">
+        <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-neutral-400"><span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Available for Q4/Q1</span>
+        <a href="#contact" data-scroll class="inline-flex justify-center items-center gap-2 rounded-full bg-brand text-white py-4 font-medium">Start a Project <i data-lucide="arrow-up-right" class="w-4 h-4"></i></a>
+        <a href="mailto:info@cyberbaze.tech" class="text-center text-neutral-400 text-sm">info@cyberbaze.tech</a>
+      </div>
+    </div>
+  </div>
+
+<main>
+
+<!-- ============ HERO ============ -->
+<section id="hero" class="relative overflow-hidden">
+  <div class="bg-grid absolute inset-0 pointer-events-none" aria-hidden="true"></div>
+  <div class="absolute -top-40 right-[-10%] w-[640px] h-[640px] rounded-full bg-brand/10 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+
+  <div class="relative mx-auto max-w-7xl px-5 sm:px-8 pt-16 sm:pt-24 lg:pt-28 pb-16 lg:pb-24 grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+    <div class="lg:col-span-7 flex flex-col gap-8">
+      <span class="reveal self-start inline-flex items-center gap-2.5 rounded-full border border-neutral-800 bg-neutral-900/60 pl-2 pr-4 py-1.5 font-mono text-[11px] uppercase tracking-wider text-neutral-300">
+        <span class="w-5 h-5 rounded-full bg-brand/15 flex items-center justify-center"><i data-lucide="sparkles" class="w-3 h-3 text-brand-flare"></i></span>
+        Autonomous Systems × Digital Product Design
+      </span>
+
+      <h1 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.95] text-[42px] sm:text-6xl lg:text-[76px]">
+        <span class="line-mask"><span style="--d:80ms">Engineering AI automation</span></span>
+        <span class="line-mask"><span style="--d:160ms">&amp; modern digital products</span></span>
+        <span class="line-mask"><span style="--d:240ms" class="text-neutral-500">for <span class="text-brand-flare">high-growth</span> brands.</span></span>
+      </h1>
+
+      <p class="reveal max-w-xl text-lg sm:text-xl leading-relaxed text-neutral-400" style="--d:400ms">
+        We build the agents and workflows that take repetitive work off your team, then the websites and brands that carry the business to market. One team, measured in hours saved and pipeline won.
+      </p>
+
+      <div class="reveal flex flex-wrap gap-3" style="--d:520ms">
+        <a href="#contact" data-scroll class="magnetic group inline-flex items-center rounded-full bg-brand text-white pl-6 pr-5 py-4 font-medium shadow-[0_0_0_0_rgba(217,37,29,0)] hover:shadow-[0_0_40px_-6px_rgba(217,37,29,.65)] hover:scale-[1.02] transition-[box-shadow,transform] duration-500 ease-expo">
+          <span class="mag-inner"><span class="roll"><span>Request a System Audit</span><span>Request a System Audit</span></span><i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-500 ease-expo group-hover:translate-x-1"></i></span>
+        </a>
+        <a href="#results" data-scroll class="group inline-flex items-center gap-2 rounded-full border border-neutral-700 text-white px-6 py-4 font-medium hover:border-neutral-400 hover:bg-white/[0.03] hover:scale-[1.02] transition-all duration-500 ease-expo">
+          See results <i data-lucide="arrow-down-right" class="w-4 h-4 transition-transform duration-500 ease-expo group-hover:rotate-45"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Animated mark panel -->
+    <div class="lg:col-span-5 reveal" style="--d:300ms">
+      <div class="spot relative rounded-[28px] border border-neutral-800 bg-neutral-900/40 p-6 sm:p-8 aspect-square max-w-[520px] mx-auto">
+        <div class="absolute inset-0 rounded-[28px] bg-grid opacity-60 pointer-events-none" style="background-size:36px 36px;-webkit-mask-image:none;mask-image:none" aria-hidden="true"></div>
+        <div class="relative flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-neutral-500">
+          <span class="inline-flex items-center gap-2"><span class="pulse-dot w-1.5 h-1.5 rounded-full bg-brand-flare"></span>Live system</span>
+          <button id="replay" class="inline-flex items-center gap-1.5 hover:text-white transition-colors" aria-label="Replay the mark animation"><i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>Replay</button>
+        </div>
+        <div id="hero-mark" class="relative mx-auto mt-4 w-[78%]"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -14 794 805" role="img" aria-label="Cyberbaze mark: nodes connecting like an automation running" class="block w-full h-auto"><title>Cyberbaze mark</title><defs>
+<linearGradient id="cb-g1" gradientUnits="userSpaceOnUse" x1="1" y1="777" x2="491" y2="1"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="cb-g2" gradientUnits="userSpaceOnUse" x1="267" y1="203" x2="763" y2="1"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="cb-g3" gradientUnits="userSpaceOnUse" x1="565" y1="777" x2="767" y2="289"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<linearGradient id="cb-g4" gradientUnits="userSpaceOnUse" x1="1" y1="777" x2="203" y2="575"><stop offset="0" stop-color="#DB261D"/><stop offset="1" stop-color="#8F282B"/></linearGradient>
+<filter id="cb-goo" filterUnits="userSpaceOnUse" x="-200" y="-200" width="1170" height="1180" color-interpolation-filters="sRGB"><feGaussianBlur in="SourceGraphic" stdDeviation="30"/><feColorMatrix values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 48 -20.16"/></filter>
+<clipPath id="cb-c1"><path d="M392.3 774.3C387.7 774.4 382.9 774.2 378.3 773.7C373.7 773.1 369 772.2 364.5 771C360 769.8 355.5 768.3 351.2 766.4C346.9 764.6 342.7 762.4 338.8 760C334.8 757.5 330.9 754.8 327.3 751.8C323.7 748.8 320.3 745.6 317.2 742.1C314 738.7 311.1 734.9 308.5 731.1C305.9 727.2 303.5 723.1 301.5 718.9C299.4 714.7 297.7 710.3 296.2 705.9C294.8 701.4 293.7 696.8 292.9 692.2C292.2 687.6 291.7 682.9 291.6 678.2C291.5 673.6 291.7 668.8 292.3 664.2C292.9 659.6 293.8 654.9 295 650.4C296.2 645.9 297.7 641.4 299.6 637.1C301.4 632.8 303.5 628.6 305.9 624.6C308.2 620.6 310.9 616.7 313.7 612.9C316.4 609.1 319.5 605.5 322.4 601.9C325.4 598.3 328.5 594.8 331.4 591.1C334.3 587.4 337.3 583.8 339.8 579.9C342.4 575.9 344.8 571.9 346.7 567.6C348.6 563.4 350.2 558.9 351.4 554.4C352.5 549.8 353.2 545.2 353.6 540.5C354 535.9 354 531.1 353.7 526.5C353.4 521.8 352.7 517.1 351.6 512.6C350.5 508 349 503.5 347.1 499.3C345.2 495 342.9 490.9 340.3 487C337.8 483.1 334.8 479.4 331.8 475.8C328.8 472.2 325.6 468.8 322.4 465.4C319.1 462 315.8 458.7 312.4 455.5C309 452.3 305.5 449.1 301.8 446.2C298.2 443.3 294.4 440.4 290.4 438C286.4 435.6 282.2 433.4 277.9 431.7C273.5 430 269 428.7 264.4 427.7C259.8 426.8 255.1 426.2 250.5 426C245.8 425.8 241.1 425.9 236.4 426.4C231.8 426.9 227.1 427.7 222.6 428.9C218.1 430.1 213.7 431.7 209.4 433.7C205.2 435.7 201.2 438.2 197.3 440.7C193.4 443.3 189.7 446.3 186.1 449.2C182.4 452.1 178.9 455.3 175.3 458.3C171.7 461.2 168.1 464.2 164.3 467C160.5 469.7 156.6 472.3 152.5 474.6C148.4 477 144.2 479.1 139.9 480.8C135.6 482.6 131.1 484.1 126.6 485.3C122 486.5 117.4 487.3 112.8 487.8C108.1 488.4 103.4 488.5 98.7 488.4C94.1 488.2 89.4 487.7 84.8 486.9C80.2 486.1 75.6 484.9 71.1 483.4C66.7 482 62.3 480.2 58.2 478.1C54 476 49.9 473.6 46.1 470.9C42.2 468.3 38.5 465.3 35.1 462.1C31.7 459 28.5 455.5 25.5 451.9C22.6 448.2 19.9 444.4 17.5 440.4C15.1 436.3 13 432.1 11.2 427.8C9.4 423.5 7.9 419 6.7 414.5C5.6 410 4.7 405.3 4.2 400.7C3.7 396 3.5 391.3 3.7 386.6C3.8 382 4.3 377.3 5.2 372.7C6 368.1 7.1 363.5 8.6 359C10.1 354.6 11.9 350.2 13.9 346C15.9 341.8 18.3 337.8 20.8 333.8C23.4 329.9 26.2 326.1 29.1 322.4C32 318.7 35.1 315.2 38 311.6C41 308 44.1 304.5 46.9 300.7C49.7 297 52.5 293.1 54.8 289.1C57.2 285 59.2 280.8 60.9 276.4C62.5 272 63.7 267.5 64.6 262.9C65.4 258.3 65.9 253.6 66.1 248.9C66.2 244.2 66 239.5 65.5 234.9C64.9 230.2 64 225.6 62.7 221.1C61.4 216.6 59.6 212.2 57.6 208C55.5 203.8 53 199.8 50.4 196C47.7 192.1 44.7 188.5 41.8 184.9C38.8 181.2 35.7 177.7 32.7 174.1C29.8 170.4 26.8 166.8 24.1 163C21.4 159.2 18.9 155.2 16.6 151.1C14.3 147 12.3 142.8 10.6 138.4C8.9 134.1 7.4 129.6 6.4 125C5.3 120.5 4.5 115.8 4.1 111.2C3.6 106.5 3.5 101.8 3.8 97.1C4 92.5 4.6 87.8 5.4 83.2C6.3 78.6 7.6 74 9.1 69.6C10.6 65.2 12.5 60.9 14.7 56.7C16.8 52.6 19.3 48.6 22 44.8C24.7 41 27.7 37.3 31 33.9C34.2 30.6 37.7 27.4 41.4 24.5C45.1 21.6 49 19 53 16.7C57.1 14.4 61.3 12.3 65.7 10.6C70 8.9 74.5 7.4 79.1 6.3C83.6 5.3 88.3 4.5 92.9 4.1C97.6 3.6 102.3 3.5 107 3.8C111.6 4 116.3 4.6 120.9 5.5C125.5 6.4 130.1 7.6 134.5 9.1C138.9 10.7 143.2 12.6 147.4 14.7C151.5 16.9 155.5 19.3 159.3 22.1C163.1 24.8 166.8 27.8 170.1 31C173.5 34.3 176.7 37.8 179.6 41.5C182.4 45.1 185.1 49 187.4 53.1C189.8 57.1 191.9 61.4 193.6 65.7C195.4 70 196.9 74.5 198 79C199.2 83.6 200 88.2 200.5 92.9C200.9 97.5 201 102.2 200.8 106.9C200.5 111.6 199.9 116.3 199 120.8C198 125.4 196.7 130 195.2 134.4C193.6 138.8 191.7 143.1 189.6 147.2C187.5 151.4 185 155.4 182.4 159.3C179.8 163.2 177 166.9 174.1 170.6C171.2 174.3 168.1 177.8 165.1 181.4C162.1 185.1 159 188.6 156.2 192.4C153.5 196.1 150.8 200 148.5 204.1C146.2 208.2 144.2 212.5 142.7 216.9C141.1 221.3 140 225.9 139.2 230.5C138.4 235.1 138 239.8 137.9 244.5C137.8 249.1 138.1 253.8 138.7 258.5C139.3 263.1 140.3 267.7 141.7 272.2C143.1 276.6 144.9 281 147 285.2C149.2 289.3 151.8 293.3 154.5 297.1C157.2 300.9 160.3 304.4 163.4 307.9C166.5 311.4 169.8 314.8 173.1 318.1C176.4 321.4 179.8 324.7 183.3 327.9C186.7 331 190.3 334.1 194 336.8C197.8 339.6 201.7 342.3 205.9 344.4C210 346.6 214.3 348.5 218.8 350C223.2 351.4 227.8 352.4 232.4 353.1C237.1 353.8 241.8 354.1 246.5 354.1C251.1 354.1 255.9 353.7 260.5 353C265.1 352.3 269.7 351.2 274.1 349.7C278.5 348.2 282.8 346.2 287 344C291.1 341.8 295 339.1 298.8 336.4C302.5 333.7 306.1 330.6 309.7 327.6C313.3 324.7 316.8 321.5 320.5 318.6C324.2 315.7 327.9 312.8 331.8 310.2C335.7 307.6 339.7 305.1 343.8 303C348 300.9 352.3 298.9 356.7 297.4C361.1 295.8 365.7 294.5 370.2 293.6C374.8 292.7 379.5 292 384.2 291.8C388.8 291.5 393.6 291.5 398.2 291.9C402.9 292.3 407.5 293.1 412.1 294.1C416.6 295.2 421.2 296.6 425.5 298.3C429.9 299.9 434.1 302 438.2 304.2C442.3 306.5 446.2 309.1 449.9 312C453.6 314.8 457.2 318 460.4 321.3C463.7 324.7 466.7 328.3 469.5 332C472.3 335.8 474.8 339.8 477 343.9C479.2 348.1 481.1 352.4 482.7 356.8C484.3 361.2 485.6 365.7 486.5 370.3C487.5 374.9 488.1 379.5 488.4 384.2C488.7 388.9 488.6 393.6 488.2 398.2C487.8 402.9 487.1 407.6 486 412.1C484.9 416.7 483.5 421.2 481.8 425.5C480.2 429.9 478.1 434.2 475.9 438.3C473.7 442.4 471.1 446.3 468.5 450.2C465.8 454 462.8 457.7 459.9 461.3C457 465 453.8 468.5 450.9 472.1C447.9 475.7 444.9 479.3 442.2 483.2C439.5 487 437 491 434.9 495.1C432.8 499.3 431 503.7 429.6 508.2C428.3 512.6 427.3 517.3 426.7 521.9C426.2 526.5 426 531.3 426.1 535.9C426.3 540.6 426.8 545.3 427.7 549.9C428.6 554.5 429.8 559 431.5 563.4C433.2 567.7 435.3 572 437.7 576C440.1 580 442.9 583.8 445.7 587.5C448.5 591.3 451.7 594.8 454.6 598.4C457.6 602 460.7 605.5 463.6 609.3C466.4 613 469.2 616.7 471.7 620.7C474.2 624.6 476.6 628.7 478.6 633C480.6 637.2 482.4 641.6 483.8 646C485.2 650.4 486.4 655 487.2 659.6C488 664.2 488.4 668.9 488.5 673.6C488.7 678.3 488.4 683 487.9 687.6C487.3 692.3 486.4 696.9 485.1 701.4C483.9 705.9 482.4 710.4 480.5 714.7C478.7 719 476.5 723.2 474 727.2C471.6 731.1 468.9 735 465.9 738.6C462.9 742.2 459.7 745.6 456.2 748.8C452.8 751.9 449 754.8 445.2 757.5C441.3 760.1 437.2 762.4 433 764.5C428.8 766.5 424.4 768.3 420 769.7C415.5 771.1 410.9 772.2 406.3 773C401.7 773.8 397 774.2 392.3 774.3Z"/></clipPath><radialGradient id="cb-glow"><stop offset="0" stop-color="#FFB0A3" stop-opacity="1"/><stop offset=".45" stop-color="#FF7A6B" stop-opacity=".55"/><stop offset="1" stop-color="#FF8A7A" stop-opacity="0"/></radialGradient>
+</defs><style>.cbn{transform-box:view-box;animation:cb-pop .7s cubic-bezier(.16,1,.3,1) both}
+.cbl{fill:none;stroke-linecap:round;animation:cb-draw .55s cubic-bezier(.65,0,.35,1) both}
+.cbw{transform-box:view-box;animation:cb-pop .7s cubic-bezier(.16,1,.3,1) 1.95s both,cb-breathe 2.4s ease-in-out 2.8s infinite}
+.cbp{transform-box:view-box;transform-origin:0 0;visibility:hidden;animation:cb-flow 3.2s cubic-bezier(.65,0,.35,1) 2.3s infinite both}
+@keyframes cb-pop{0%{transform:scale(.01)}55%{transform:scale(1.08)}100%{transform:scale(1)}}
+@keyframes cb-draw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+@keyframes cb-breathe{0%,100%{transform:scale(1)}50%{transform:scale(.9)}}
+@keyframes cb-flow{0%{transform:translate(102px,102px) scale(.2);visibility:hidden}2%{visibility:visible}10%{transform:translate(102px,102px) scale(1);visibility:visible}36%{transform:translate(102px,390px) scale(1)}64%{transform:translate(390px,390px) scale(1)}90%{transform:translate(390px,676px) scale(1)}100%{transform:translate(390px,676px) scale(0)}}
+@media (prefers-reduced-motion:reduce){.cbn,.cbl,.cbw,.cbp{animation:none!important}.cbp{visibility:hidden}}</style>
+<g filter="url(#cb-goo)">
+<path class="cbl" d="M102 102L102 390" stroke="url(#cb-g1)" stroke-width="58" stroke-dasharray="288 288" style="--len:288;animation-delay:0.25s"/>
+<path class="cbl" d="M102 390L390 390" stroke="url(#cb-g1)" stroke-width="58" stroke-dasharray="288 288" style="--len:288;animation-delay:0.8s"/>
+<path class="cbl" d="M390 390L390 676" stroke="url(#cb-g1)" stroke-width="58" stroke-dasharray="286 286" style="--len:286;animation-delay:1.35s"/>
+<circle class="cbn" cx="102" cy="102" r="97" fill="url(#cb-g1)" style="transform-origin:102px 102px;animation-delay:0s"/>
+<circle class="cbn" cx="102" cy="390" r="97" fill="url(#cb-g1)" style="transform-origin:102px 390px;animation-delay:0.55s"/>
+<circle class="cbn" cx="390" cy="390" r="97" fill="url(#cb-g1)" style="transform-origin:390px 390px;animation-delay:1.1s"/>
+<circle class="cbn" cx="390" cy="676" r="97" fill="url(#cb-g1)" style="transform-origin:390px 676px;animation-delay:1.65s"/>
+</g>
+<g filter="url(#cb-goo)">
+<path class="cbl" d="M368 102L662 102" stroke="url(#cb-g2)" stroke-width="58" stroke-dasharray="294 294" style="--len:294;animation-delay:0.55s"/>
+<circle class="cbn" cx="368" cy="102" r="97" fill="url(#cb-g2)" style="transform-origin:368px 102px;animation-delay:0.3s"/>
+<circle class="cbn" cx="662" cy="102" r="97" fill="url(#cb-g2)" style="transform-origin:662px 102px;animation-delay:0.85s"/>
+</g>
+<g filter="url(#cb-goo)">
+<path class="cbl" d="M666 390L666 676" stroke="url(#cb-g3)" stroke-width="58" stroke-dasharray="286 286" style="--len:286;animation-delay:0.85s"/>
+<circle class="cbn" cx="666" cy="390" r="97" fill="url(#cb-g3)" style="transform-origin:666px 390px;animation-delay:0.6s"/>
+<circle class="cbn" cx="666" cy="676" r="97" fill="url(#cb-g3)" style="transform-origin:666px 676px;animation-delay:1.15s"/>
+</g>
+<g filter="url(#cb-goo)">
+<circle class="cbw" cx="102" cy="676" r="97" fill="url(#cb-g4)" style="transform-origin:102px 676px"/>
+</g>
+<g clip-path="url(#cb-c1)"><circle class="cbp" cx="0" cy="0" r="70" fill="url(#cb-glow)"/></g>
+</svg></div>
+        <div class="relative mt-4 grid grid-cols-3 gap-2 font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-neutral-500">
+          <span class="border-t border-neutral-800 pt-2">Node = task</span>
+          <span class="border-t border-neutral-800 pt-2">Bridge = flow</span>
+          <span class="border-t border-neutral-800 pt-2 text-neutral-300">Next = yours</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics ticker -->
+  <div class="relative border-y border-neutral-800 bg-neutral-950">
+    <div class="ticker overflow-hidden py-5" aria-label="Client results">
+      <div class="ticker-track">
+        <div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">4.5 min</span><span class="text-sm text-neutral-400">speed-to-lead</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">NexaPay</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">84.2%</span><span class="text-sm text-neutral-400">documents, zero manual entry</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">FreightVanguard</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">−38%</span><span class="text-sm text-neutral-400">customer acquisition cost</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">CertiShield</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">67.4%</span><span class="text-sm text-neutral-400">tickets resolved by AI</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">TalentoSphere</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">38 sec</span><span class="text-sm text-neutral-400">first response time</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">TalentoSphere</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">0.95s</span><span class="text-sm text-neutral-400">page load, from 4.8s</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">CertiShield</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">+49%</span><span class="text-sm text-neutral-400">onboarding completion</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">NexaPay</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">15.2 hrs</span><span class="text-sm text-neutral-400">back per manager, weekly</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">FreightVanguard</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">4.5 min</span><span class="text-sm text-neutral-400">speed-to-lead</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">NexaPay</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">84.2%</span><span class="text-sm text-neutral-400">documents, zero manual entry</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">FreightVanguard</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">−38%</span><span class="text-sm text-neutral-400">customer acquisition cost</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">CertiShield</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">67.4%</span><span class="text-sm text-neutral-400">tickets resolved by AI</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">TalentoSphere</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">38 sec</span><span class="text-sm text-neutral-400">first response time</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">TalentoSphere</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">0.95s</span><span class="text-sm text-neutral-400">page load, from 4.8s</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">CertiShield</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">+49%</span><span class="text-sm text-neutral-400">onboarding completion</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">NexaPay</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div><div aria-hidden="true" class="flex items-center gap-4 px-8 shrink-0"><span class="font-display text-2xl sm:text-3xl font-semibold text-white tracking-tight">15.2 hrs</span><span class="text-sm text-neutral-400">back per manager, weekly</span><span class="font-mono text-[10px] uppercase tracking-wider text-neutral-600">FreightVanguard</span><svg class="w-3.5 h-3.5 ml-4 opacity-80" aria-hidden="true"><use href="#cb-mark"/></svg></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CAPABILITIES (BENTO) ============ -->
+<section id="capabilities" class="relative mx-auto max-w-7xl px-5 sm:px-8 py-24 sm:py-32">
+  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
+    <div class="flex flex-col gap-5">
+      <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">01 — Capabilities</span>
+      <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
+        <span class="line-mask"><span>One system.</span></span>
+        <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">Four ways in.</span></span>
+      </h2>
+    </div>
+    <p class="reveal max-w-md text-neutral-400 leading-relaxed" style="--d:160ms">Start with the layer that hurts most. Automation is the engine; interfaces, brand and growth carry it to market. Every layer connects to the next.</p>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-6 gap-4" data-stagger>
+    <!-- Card 1 AI -->
+    <article class="spot reveal md:col-span-4 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-9 flex flex-col gap-10 min-h-[420px] hover:border-neutral-700">
+      <div class="flex items-start justify-between gap-4">
+        <span class="w-12 h-12 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center"><i data-lucide="bot" class="w-5 h-5 text-brand-flare"></i></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Systems · 01</span>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h3 class="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-white">AI Automation &amp; Workflows</h3>
+        <p class="text-neutral-400 leading-relaxed max-w-lg">Autonomous agents and custom business-process bots that qualify leads, read documents, answer support and update your systems, with a person approving anything that matters.</p>
+      </div>
+      <!-- mini workflow -->
+      <div class="mt-auto rounded-2xl border border-neutral-800 bg-neutral-950/60 p-4 sm:p-5">
+        <div class="relative flex items-center justify-between gap-2">
+          <div class="absolute left-6 right-6 top-1/2 h-px bg-neutral-800" aria-hidden="true"></div>
+          <span class="flow-dot absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-flare shadow-[0_0_14px_2px_rgba(255,90,78,.6)]" aria-hidden="true"></span>
+          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="inbox" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Trigger</span></span>
+          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="scan-text" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Enrich</span></span>
+          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-brand flex items-center justify-center shadow-[0_0_24px_-4px_rgba(217,37,29,.8)]"><i data-lucide="cpu" class="w-4 h-4 text-white"></i></span><span class="font-mono text-[10px] uppercase text-neutral-300">Agent</span></span>
+          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="user-check" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Approve</span></span>
+          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="database" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">CRM / ERP</span></span>
+        </div>
+      </div>
+    </article>
+
+    <!-- Card 2 Web -->
+    <article class="spot reveal md:col-span-2 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[420px] hover:border-neutral-700">
+      <div class="flex items-start justify-between gap-4">
+        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="layout-template" class="w-5 h-5 text-white"></i></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Surfaces · 02</span>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Modern Web &amp; UI/UX Design</h3>
+        <p class="text-neutral-400 leading-relaxed">Framer-grade interactive architecture, product UI and micro-interactions, built for sub-second loads and wired into your systems.</p>
+      </div>
+      <div class="mt-auto rounded-2xl border border-neutral-800 bg-neutral-950/60 p-4 flex flex-col gap-3">
+        <div class="flex items-center gap-1.5" aria-hidden="true"><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span></div>
+        <div class="h-2 w-2/3 rounded bg-neutral-800"></div>
+        <div class="h-2 w-1/2 rounded bg-neutral-800"></div>
+        <button type="button" class="ui-demo mt-1 self-start rounded-full bg-white text-neutral-950 text-xs font-medium px-4 py-2 transition-all duration-500 ease-expo hover:bg-brand hover:text-white hover:px-6">Hover me</button>
+        <span class="font-mono text-[10px] uppercase text-neutral-500">0.95s load · 99/100 score · CertiShield</span>
+      </div>
+    </article>
+
+    <!-- Card 3 Brand -->
+    <article class="spot reveal md:col-span-3 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[360px] hover:border-neutral-700">
+      <div class="flex items-start justify-between gap-4">
+        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="pen-tool" class="w-5 h-5 text-white"></i></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Signal · 03</span>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Brand Identity Systems</h3>
+        <p class="text-neutral-400 leading-relaxed max-w-md">Vector marks, editorial typography and brand playbooks that make a scaling company look as credible as the product it sells.</p>
+      </div>
+      <div class="mt-auto grid grid-cols-4 gap-2" aria-hidden="true">
+        <div class="aspect-square rounded-xl bg-brand flex items-end p-2 font-mono text-[9px] text-white/90">D9251D</div>
+        <div class="aspect-square rounded-xl bg-brand-ox flex items-end p-2 font-mono text-[9px] text-white/90">8F282B</div>
+        <div class="aspect-square rounded-xl bg-neutral-100 flex items-center justify-center font-display text-2xl font-bold text-neutral-950">Aa</div>
+        <div class="aspect-square rounded-xl border border-neutral-700 flex items-center justify-center"><svg class="w-3/5 h-3/5"><use href="#cb-mark"/></svg></div>
+      </div>
+    </article>
+
+    <!-- Card 4 Growth -->
+    <article class="spot reveal md:col-span-3 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[360px] hover:border-neutral-700">
+      <div class="flex items-start justify-between gap-4">
+        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="trending-up" class="w-5 h-5 text-white"></i></span>
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Signal · 04</span>
+      </div>
+      <div class="flex flex-col gap-4">
+        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Growth &amp; Performance Marketing</h3>
+        <p class="text-neutral-400 leading-relaxed max-w-md">Funnel architecture, conversion audits, search and AI-assisted outbound, reported against pipeline and acquisition cost, not vanity metrics.</p>
+      </div>
+      <div class="mt-auto flex items-end gap-6">
+        <div class="flex items-end gap-2 h-24" aria-hidden="true">
+          <span class="bar w-7 rounded-t-md bg-neutral-700" style="--h:12%"></span>
+          <span class="bar w-7 rounded-t-md bg-brand" style="--h:100%"></span>
+        </div>
+        <div class="flex flex-col gap-1">
+          <span class="font-display text-4xl font-semibold text-white tracking-tight">&lt;5 → 34</span>
+          <span class="font-mono text-[10px] uppercase text-neutral-500">Qualified demos / month · CertiShield</span>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section id="process" class="relative border-t border-neutral-800 bg-neutral-950">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 py-24 sm:py-32">
+    <div class="flex flex-col gap-5 mb-16 sm:mb-20">
+      <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">02 — Operating framework</span>
+      <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
+        <span class="line-mask"><span>From audit</span></span>
+        <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">to autopilot.</span></span>
+      </h2>
+    </div>
+
+    <div id="process-track" class="relative">
+      <!-- connection path (desktop: horizontal, mobile: vertical) -->
+      <div class="hidden md:block absolute left-0 right-0 top-[27px] h-px bg-neutral-800" aria-hidden="true"><div id="path-fill" class="h-full w-full bg-gradient-to-r from-brand-ox via-brand to-brand-flare" style="transform:scaleX(0)"></div></div>
+      <div class="md:hidden absolute left-[27px] top-0 bottom-0 w-px bg-neutral-800" aria-hidden="true"><div id="path-fill-v" class="w-full h-full bg-gradient-to-b from-brand-ox via-brand to-brand-flare origin-top" style="transform:scaleY(0)"></div></div>
+
+      <ol class="relative grid md:grid-cols-3 gap-12 md:gap-8">
+        <li class="reveal step flex md:flex-col gap-6 md:gap-8" style="--d:0ms">
+          <span class="marker shrink-0 w-14 h-14 rounded-full border border-neutral-700 bg-neutral-950 flex items-center justify-center font-mono text-sm text-neutral-300 transition-all duration-700 ease-expo">01</span>
+          <div class="flex flex-col gap-4">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Week 1</span>
+            <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">System Audit &amp; Workflow Discovery</h3>
+            <p class="text-neutral-400 leading-relaxed">We map how work actually moves through your company, price every bottleneck in hours and agree the numbers we’ll move.</p>
+            <span class="inline-flex items-center gap-2 font-mono text-xs text-neutral-300"><i data-lucide="file-search" class="w-4 h-4 text-brand-flare"></i>Automation map + baseline</span>
+          </div>
+        </li>
+        <li class="reveal step flex md:flex-col gap-6 md:gap-8" style="--d:120ms">
+          <span class="marker shrink-0 w-14 h-14 rounded-full border border-neutral-700 bg-neutral-950 flex items-center justify-center font-mono text-sm text-neutral-300 transition-all duration-700 ease-expo">02</span>
+          <div class="flex flex-col gap-4">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Weeks 2 +</span>
+            <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Architecture &amp; Autonomous Build</h3>
+            <p class="text-neutral-400 leading-relaxed">System design first, then two-week sprints. Every sprint ends with something live your team can use.</p>
+            <span class="inline-flex items-center gap-2 font-mono text-xs text-neutral-300"><i data-lucide="boxes" class="w-4 h-4 text-brand-flare"></i>Working releases, every two weeks</span>
+          </div>
+        </li>
+        <li class="reveal step flex md:flex-col gap-6 md:gap-8" style="--d:240ms">
+          <span class="marker shrink-0 w-14 h-14 rounded-full border border-neutral-700 bg-neutral-950 flex items-center justify-center font-mono text-sm text-neutral-300 transition-all duration-700 ease-expo">03</span>
+          <div class="flex flex-col gap-4">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Ongoing</span>
+            <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Deployment &amp; Continuous Scale</h3>
+            <p class="text-neutral-400 leading-relaxed">We monitor, tune and extend what we built, and report savings against the baseline every month.</p>
+            <span class="inline-flex items-center gap-2 font-mono text-xs text-neutral-300"><i data-lucide="activity" class="w-4 h-4 text-brand-flare"></i>Monthly ROI report</span>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section id="results" class="relative border-t border-neutral-800">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 py-24 sm:py-32">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
+      <div class="flex flex-col gap-5">
+        <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">03 — Results</span>
+        <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
+          <span class="line-mask"><span>Measured before.</span></span>
+          <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">Measured after.</span></span>
+        </h2>
+      </div>
+      <p class="reveal max-w-md text-neutral-400 leading-relaxed" style="--d:160ms">Numbers our clients report, not projections.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <article class="spot reveal rounded-3xl border bg-neutral-900/40 border-neutral-800 hover:border-neutral-700 p-7 sm:p-9 flex flex-col justify-between gap-12 min-h-[340px]" style="--d:0ms">
+        <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider text-neutral-500"><span>NexaPay</span><span>Systems · Surfaces · Signal</span></div>
+        <div class="flex flex-col gap-4">
+          <span class="count font-display font-semibold text-white tracking-tightest leading-none text-6xl sm:text-7xl tabular-nums" data-to="4.5" data-dec="1" data-pre="" data-suf=" min">4.5 min</span>
+          <p class="text-neutral-400 text-lg leading-snug max-w-md">speed-to-lead, down from 24.2 hours. High-intent buyers now land straight in reps’ calendars.</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 pt-5">
+          <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-neutral-400"><span>+49% onboarding completion</span><span>18.4% → 29.1% demo-to-opportunity</span></div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">FinTech SaaS · Series A</span>
+        </div>
+      </article>
+      <article class="spot reveal rounded-3xl border bg-gradient-to-br from-brand to-brand-ox border-brand/40 p-7 sm:p-9 flex flex-col justify-between gap-12 min-h-[340px]" style="--d:100ms">
+        <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider text-white/70"><span>FreightVanguard</span><span>Systems · Surfaces</span></div>
+        <div class="flex flex-col gap-4">
+          <span class="count font-display font-semibold text-white tracking-tightest leading-none text-6xl sm:text-7xl tabular-nums" data-to="84.2" data-dec="1" data-pre="" data-suf="%">84.2%</span>
+          <p class="text-white/80 text-lg leading-snug max-w-md">of 1,200+ weekly freight documents now flow into the ERP with no manual entry.</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-white/20 pt-5">
+          <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-white/80"><span>15.2 hrs/week back per manager</span><span>31 → 4.2 hrs issue resolution</span></div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-white/70">Freight + logistics · $68M volume</span>
+        </div>
+      </article>
+      <article class="spot reveal rounded-3xl border bg-neutral-900/40 border-neutral-800 hover:border-neutral-700 p-7 sm:p-9 flex flex-col justify-between gap-12 min-h-[340px]" style="--d:0ms">
+        <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider text-neutral-500"><span>CertiShield</span><span>Surfaces · Signal</span></div>
+        <div class="flex flex-col gap-4">
+          <span class="count font-display font-semibold text-white tracking-tightest leading-none text-6xl sm:text-7xl tabular-nums" data-to="34" data-dec="0" data-pre="" data-suf="/mo">34/mo</span>
+          <p class="text-neutral-400 text-lg leading-snug max-w-md">qualified demos from organic search, up from fewer than 5.</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 pt-5">
+          <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-neutral-400"><span>−38% blended CAC</span><span>4.8s → 0.95s page load</span></div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Cybersecurity · mid-market</span>
+        </div>
+      </article>
+      <article class="spot reveal rounded-3xl border bg-neutral-900/40 border-neutral-800 hover:border-neutral-700 p-7 sm:p-9 flex flex-col justify-between gap-12 min-h-[340px]" style="--d:100ms">
+        <div class="flex flex-wrap items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-wider text-neutral-500"><span>TalentoSphere</span><span>Systems · Surfaces</span></div>
+        <div class="flex flex-col gap-4">
+          <span class="count font-display font-semibold text-white tracking-tightest leading-none text-6xl sm:text-7xl tabular-nums" data-to="67.4" data-dec="1" data-pre="" data-suf="%">67.4%</span>
+          <p class="text-neutral-400 text-lg leading-snug max-w-md">of Tier-1 support tickets resolved by an AI agent, with no human in the queue.</p>
+        </div>
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-800 pt-5">
+          <div class="flex flex-wrap gap-x-6 gap-y-1 font-mono text-xs text-neutral-400"><span>6.4 hrs → 38 sec first response</span><span>71.5% → 88.2% retention</span></div>
+          <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">HR tech · 140,000 users</span>
+        </div>
+      </article>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="relative border-t border-neutral-800">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 py-24 sm:py-32 grid lg:grid-cols-12 gap-12">
+    <div class="lg:col-span-4 flex flex-col gap-5">
+      <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">04 — FAQ</span>
+      <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl">
+        <span class="line-mask"><span>Good</span></span>
+        <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">questions.</span></span>
+      </h2>
+      <p class="reveal text-neutral-400 leading-relaxed max-w-sm" style="--d:160ms">Anything else? Write to <a href="mailto:info@cyberbaze.tech" class="u-link text-white">info@cyberbaze.tech</a>.</p>
+    </div>
+    <div class="lg:col-span-8 border-t border-neutral-800" id="faq-list">
+      <div class="faq-item reveal border-b border-neutral-800" style="--d:0ms">
+        <h3>
+          <button type="button" class="faq-btn w-full flex items-center justify-between gap-6 py-6 sm:py-7 text-left group" aria-expanded="false" aria-controls="faq-p0" id="faq-b0">
+            <span class="flex items-baseline gap-5"><span class="font-mono text-xs text-neutral-600">01</span><span class="font-display text-lg sm:text-2xl font-medium tracking-tight text-white group-hover:text-brand-flare transition-colors">How long does a project take?</span></span>
+            <span class="faq-icon shrink-0 w-10 h-10 rounded-full border border-neutral-700 group-hover:border-brand-flare flex items-center justify-center transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></span>
+          </button>
+        </h3>
+        <div class="faq-panel" id="faq-p0" role="region" aria-labelledby="faq-b0">
+          <p class="pb-7 sm:pl-[3.1rem] pr-12 text-neutral-400 leading-relaxed max-w-2xl">A Sprint covers one layer in 2–4 weeks: one automation, one landing page or one brand refresh. A Build covers system plus interface in 6–12 weeks. Either way, the first live release lands at the end of the first two-week sprint after the audit.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal border-b border-neutral-800" style="--d:70ms">
+        <h3>
+          <button type="button" class="faq-btn w-full flex items-center justify-between gap-6 py-6 sm:py-7 text-left group" aria-expanded="false" aria-controls="faq-p1" id="faq-b1">
+            <span class="flex items-baseline gap-5"><span class="font-mono text-xs text-neutral-600">02</span><span class="font-display text-lg sm:text-2xl font-medium tracking-tight text-white group-hover:text-brand-flare transition-colors">What exactly do we receive at the end?</span></span>
+            <span class="faq-icon shrink-0 w-10 h-10 rounded-full border border-neutral-700 group-hover:border-brand-flare flex items-center justify-center transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></span>
+          </button>
+        </h3>
+        <div class="faq-panel" id="faq-p1" role="region" aria-labelledby="faq-b1">
+          <p class="pb-7 sm:pl-[3.1rem] pr-12 text-neutral-400 leading-relaxed max-w-2xl">Working systems in production, not slide decks. You own all of it: code, accounts, prompts and documentation, plus a handover session and training for your team.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal border-b border-neutral-800" style="--d:140ms">
+        <h3>
+          <button type="button" class="faq-btn w-full flex items-center justify-between gap-6 py-6 sm:py-7 text-left group" aria-expanded="false" aria-controls="faq-p2" id="faq-b2">
+            <span class="flex items-baseline gap-5"><span class="font-mono text-xs text-neutral-600">03</span><span class="font-display text-lg sm:text-2xl font-medium tracking-tight text-white group-hover:text-brand-flare transition-colors">Do we need clean data or new tools first?</span></span>
+            <span class="faq-icon shrink-0 w-10 h-10 rounded-full border border-neutral-700 group-hover:border-brand-flare flex items-center justify-center transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></span>
+          </button>
+        </h3>
+        <div class="faq-panel" id="faq-p2" role="region" aria-labelledby="faq-b2">
+          <p class="pb-7 sm:pl-[3.1rem] pr-12 text-neutral-400 leading-relaxed max-w-2xl">No. The Week 1 audit shows what your data supports today. We build into the CRM, ERP, help desk and inbox you already run, and clean or connect data as part of the work.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal border-b border-neutral-800" style="--d:210ms">
+        <h3>
+          <button type="button" class="faq-btn w-full flex items-center justify-between gap-6 py-6 sm:py-7 text-left group" aria-expanded="false" aria-controls="faq-p3" id="faq-b3">
+            <span class="flex items-baseline gap-5"><span class="font-mono text-xs text-neutral-600">04</span><span class="font-display text-lg sm:text-2xl font-medium tracking-tight text-white group-hover:text-brand-flare transition-colors">Will AI talk to customers or move money without oversight?</span></span>
+            <span class="faq-icon shrink-0 w-10 h-10 rounded-full border border-neutral-700 group-hover:border-brand-flare flex items-center justify-center transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></span>
+          </button>
+        </h3>
+        <div class="faq-panel" id="faq-p3" role="region" aria-labelledby="faq-b3">
+          <p class="pb-7 sm:pl-[3.1rem] pr-12 text-neutral-400 leading-relaxed max-w-2xl">Only where you decide it should. Every agent ships with approval steps, escalation rules and a full activity log, so your team stays in control of anything that leaves the building.</p>
+        </div>
+      </div>
+      <div class="faq-item reveal border-b border-neutral-800" style="--d:280ms">
+        <h3>
+          <button type="button" class="faq-btn w-full flex items-center justify-between gap-6 py-6 sm:py-7 text-left group" aria-expanded="false" aria-controls="faq-p4" id="faq-b4">
+            <span class="flex items-baseline gap-5"><span class="font-mono text-xs text-neutral-600">05</span><span class="font-display text-lg sm:text-2xl font-medium tracking-tight text-white group-hover:text-brand-flare transition-colors">How is scope and pricing decided?</span></span>
+            <span class="faq-icon shrink-0 w-10 h-10 rounded-full border border-neutral-700 group-hover:border-brand-flare flex items-center justify-center transition-colors"><i data-lucide="plus" class="w-4 h-4 text-white"></i></span>
+          </button>
+        </h3>
+        <div class="faq-panel" id="faq-p4" role="region" aria-labelledby="faq-b4">
+          <p class="pb-7 sm:pl-[3.1rem] pr-12 text-neutral-400 leading-relaxed max-w-2xl">Send us your email and the problem. We reply with a written scope: a fixed price for Sprints, a scoped estimate for Builds, or a monthly retainer for ongoing Partner work. Nothing starts until you approve it.</p>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONVERSION ============ -->
+<section id="contact" class="relative px-3 sm:px-6 pb-6">
+  <div class="spot reveal relative overflow-hidden mx-auto max-w-[1360px] rounded-[32px] sm:rounded-[40px] border border-neutral-800 bg-neutral-900/50 px-6 sm:px-12 lg:px-16 py-16 sm:py-24">
+    <div class="bg-grid absolute inset-0 pointer-events-none opacity-70" aria-hidden="true"></div>
+    <div class="absolute -bottom-40 -left-20 w-[520px] h-[520px] rounded-full bg-brand/15 blur-[120px] pointer-events-none" aria-hidden="true"></div>
+    <div class="relative grid lg:grid-cols-12 gap-12 items-end">
+      <div class="lg:col-span-7 flex flex-col gap-6">
+        <span class="font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">05 — Start a project</span>
+        <h2 class="font-display font-semibold text-white tracking-tightest leading-[0.95] text-4xl sm:text-6xl lg:text-7xl">Show us the work that eats <span class="text-brand-flare">your week.</span></h2>
+        <p class="text-lg text-neutral-400 leading-relaxed max-w-xl">Leave your work email. We reply within one business day with the automations worth building and a written scope. No calls until you want one.</p>
+      </div>
+      <div class="lg:col-span-5">
+        <form id="audit-form" class="flex flex-col gap-3" novalidate>
+          <label for="email" class="font-mono text-[11px] uppercase tracking-wider text-neutral-400">Work email</label>
+          <div class="flex flex-col sm:flex-row gap-2 rounded-[22px] sm:rounded-full border border-neutral-700 bg-neutral-950/70 p-2 focus-within:border-brand-flare transition-colors">
+            <input id="email" name="email" type="email" autocomplete="email" required placeholder="you@company.com" class="flex-1 min-w-0 bg-transparent px-4 py-3 text-white placeholder:text-neutral-600 outline-none text-base">
+            <button type="submit" class="magnetic group inline-flex justify-center items-center rounded-full bg-brand text-white px-6 py-3.5 font-medium hover:shadow-[0_0_40px_-6px_rgba(217,37,29,.7)] transition-shadow duration-500">
+              <span class="mag-inner"><span class="roll"><span>Request a System Audit</span><span>Request a System Audit</span></span><i data-lucide="arrow-right" class="w-4 h-4 transition-transform duration-500 ease-expo group-hover:translate-x-1"></i></span>
+            </button>
+          </div>
+          <p id="form-msg" class="min-h-[1.5em] text-sm text-neutral-500" role="status" aria-live="polite">Or write directly to <a href="mailto:info@cyberbaze.tech" class="u-link text-neutral-300">info@cyberbaze.tech</a></p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 pt-20 pb-10">
+    <div class="grid sm:grid-cols-2 lg:grid-cols-12 gap-10 pb-16 border-b border-neutral-800">
+      <div class="lg:col-span-5 flex flex-col gap-5">
+        <a href="#hero" data-scroll class="flex items-center gap-3" aria-label="Back to top">
+          <svg class="w-9 h-9" aria-hidden="true"><use href="#cb-mark"/></svg>
+          <span class="font-display font-semibold text-white text-xl tracking-tight">cyberbaze<span class="text-neutral-500 font-normal">.tech</span></span>
+        </a>
+        <p class="text-neutral-500 leading-relaxed max-w-sm">AI automation, web and UI/UX, brand identity and growth for scaling companies.</p>
+        <span class="inline-flex items-center gap-2 self-start rounded-full border border-neutral-800 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
+          <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>All systems operational
+        </span>
+      </div>
+      <nav aria-label="Footer" class="lg:col-span-3 flex flex-col gap-3 text-sm">
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-600 mb-1">Index</span>
+        <a href="#capabilities" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Capabilities</a>
+        <a href="#process" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Process</a>
+        <a href="#results" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Results</a>
+        <a href="#faq" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">FAQ</a>
+      </nav>
+      <div class="lg:col-span-4 flex flex-col gap-3 text-sm">
+        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-600 mb-1">Connect</span>
+        <a href="mailto:info@cyberbaze.tech" class="u-link self-start text-white">info@cyberbaze.tech</a>
+        <div class="flex gap-2 mt-2">
+          <a href="#" class="w-11 h-11 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors" aria-label="Cyberbaze on LinkedIn"><span class="font-mono text-xs">in</span></a>
+          <a href="#" class="w-11 h-11 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors" aria-label="Cyberbaze on X"><span class="font-mono text-xs">X</span></a>
+          <a href="#" class="w-11 h-11 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors" aria-label="Cyberbaze on Instagram"><span class="font-mono text-xs">IG</span></a>
+          <a href="#" class="w-11 h-11 rounded-full border border-neutral-800 flex items-center justify-center text-neutral-400 hover:text-white hover:border-neutral-600 transition-colors" aria-label="Cyberbaze on Dribbble"><span class="font-mono text-xs">Dr</span></a>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col-reverse sm:flex-row items-start sm:items-center justify-between gap-6 pt-8">
+      <span class="font-mono text-xs text-neutral-600">© <span id="year">2026</span> Cyberbaze Incorporated. All rights reserved.</span>
+      <button id="to-top" class="group inline-flex items-center gap-3 font-mono text-xs uppercase tracking-wider text-neutral-400 hover:text-white transition-colors">
+        Back to top
+        <span class="w-11 h-11 rounded-full border border-neutral-800 group-hover:border-brand-flare group-hover:bg-brand flex items-center justify-center transition-all duration-500 ease-expo"><i data-lucide="arrow-up" class="w-4 h-4 transition-transform duration-500 ease-expo group-hover:-translate-y-0.5"></i></span>
+      </button>
+    </div>
+  </div>
+  <div class="overflow-hidden select-none pointer-events-none" aria-hidden="true">
+    <div class="font-display font-extrabold tracking-tightest leading-[0.75] text-[22vw] text-neutral-900 text-center translate-y-[12%] whitespace-nowrap">cyberbaze</div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // Icons
+  if (window.lucide && lucide.createIcons) lucide.createIcons();
+
+  // Year
+  var y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+
+  // ---------- Lenis smooth scroll ----------
+  var lenis = null;
+  if (!reduce && typeof window.Lenis === 'function') {
+    lenis = new Lenis({ duration: 1.15, easing: function (t) { return Math.min(1, 1.001 - Math.pow(2, -10 * t)); }, smoothWheel: true, wheelMultiplier: 1, touchMultiplier: 1.4 });
+    var raf = function (time) { lenis.raf(time); requestAnimationFrame(raf); };
+    requestAnimationFrame(raf);
+  }
+  var headerH = function () { var h = document.querySelector('header'); return h ? h.offsetHeight : 72; };
+  function scrollToTarget(target) {
+    if (lenis) lenis.scrollTo(target, { offset: target === 0 ? 0 : -headerH() + 1, duration: 1.4 });
+    else {
+      var top = target === 0 ? 0 : target.getBoundingClientRect().top + window.pageYOffset - headerH() + 1;
+      window.scrollTo({ top: top, behavior: reduce ? 'auto' : 'smooth' });
+    }
+  }
+
+  // ---------- Mobile drawer ----------
+  var burger = document.getElementById('burger');
+  var drawer = document.getElementById('drawer');
+  function setDrawer(open) {
+    if (!drawer) return;
+    drawer.classList.toggle('open', open);
+    drawer.setAttribute('aria-hidden', String(!open));
+    burger.setAttribute('aria-expanded', String(open));
+    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (lenis) { open ? lenis.stop() : lenis.start(); }
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  if (burger) burger.addEventListener('click', function () { setDrawer(!drawer.classList.contains('open')); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && drawer && drawer.classList.contains('open')) { setDrawer(false); burger.focus(); } });
+  window.addEventListener('resize', function () { if (window.innerWidth >= 1024 && drawer && drawer.classList.contains('open')) setDrawer(false); });
+
+  // ---------- Anchor scroll ----------
+  document.querySelectorAll('a[data-scroll]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      var id = a.getAttribute('href');
+      if (!id || id.charAt(0) !== '#') return;
+      var el = document.querySelector(id);
+      if (!el) return;
+      e.preventDefault();
+      var wasOpen = drawer && drawer.classList.contains('open');
+      if (wasOpen) setDrawer(false);
+      setTimeout(function () { scrollToTarget(id === '#hero' ? 0 : el); }, wasOpen ? 350 : 0);
+      history.replaceState(null, '', id === '#hero' ? location.pathname : id);
+    });
+  });
+  var toTop = document.getElementById('to-top');
+  if (toTop) toTop.addEventListener('click', function () { scrollToTarget(0); });
+
+  // ---------- Scroll progress + process path ----------
+  var bar = document.getElementById('progress');
+  var track = document.getElementById('process-track');
+  var pathH = document.getElementById('path-fill');
+  var pathV = document.getElementById('path-fill-v');
+  var markers = document.querySelectorAll('#process .marker');
+  function onScroll() {
+    var st = lenis ? lenis.scroll : window.pageYOffset;
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    var p = max > 0 ? Math.min(1, Math.max(0, st / max)) : 0;
+    if (bar) bar.style.transform = 'scaleX(' + p + ')';
+    if (track) {
+      var r = track.getBoundingClientRect();
+      var vh = window.innerHeight;
+      var t = Math.min(1, Math.max(0, (vh * 0.75 - r.top) / (r.height + vh * 0.25)));
+      if (reduce) t = 1;
+      if (pathH) pathH.style.transform = 'scaleX(' + t + ')';
+      if (pathV) pathV.style.transform = 'scaleY(' + t + ')';
+      markers.forEach(function (m, i) {
+        var on = t >= (i / markers.length) + 0.02;
+        m.classList.toggle('bg-brand', on); m.classList.toggle('border-brand', on); m.classList.toggle('text-white', on);
+        m.classList.toggle('bg-neutral-950', !on); m.classList.toggle('border-neutral-700', !on); m.classList.toggle('text-neutral-300', !on);
+        m.style.boxShadow = on ? '0 0 28px -4px rgba(217,37,29,.7)' : 'none';
+      });
+    }
+  }
+  if (lenis) lenis.on('scroll', onScroll); else window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  onScroll();
+
+  // ---------- Reveals ----------
+  // auto-stagger reveals that share a parent
+  document.querySelectorAll('[data-stagger]').forEach(function (g) {
+    Array.prototype.forEach.call(g.querySelectorAll(':scope > .reveal'), function (el, i) { el.style.setProperty('--d', (i * 90) + 'ms'); });
+  });
+  var targets = document.querySelectorAll('.reveal, .reveal-lines, .count');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        en.target.classList.add('is-in');
+        if (en.target.classList.contains('count')) countUp(en.target);
+        io.unobserve(en.target);
+      });
+    }, { rootMargin: '0px 0px -12% 0px', threshold: 0.12 });
+    targets.forEach(function (t) { io.observe(t); });
+  } else {
+    targets.forEach(function (t) { t.classList.add('is-in'); });
+  }
+
+  // Bars in growth card
+  document.querySelectorAll('.bar').forEach(function (b) { b.style.height = '0%'; b.style.transition = 'height 1.4s cubic-bezier(0.16,1,0.3,1)'; });
+  var growth = document.querySelector('.bar') && document.querySelector('.bar').closest('article');
+  if (growth) {
+    var bo = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.querySelectorAll('.bar').forEach(function (b, i) { setTimeout(function () { b.style.height = b.style.getPropertyValue('--h'); }, 300 + i * 200); }); bo.disconnect(); } }); }, { threshold: 0.4 });
+    bo.observe(growth);
+  }
+
+  // Count-up numbers (tabular, real metrics only)
+  function countUp(el) {
+    var to = parseFloat(el.getAttribute('data-to'));
+    var dec = parseInt(el.getAttribute('data-dec') || '0', 10);
+    var pre = el.getAttribute('data-pre') || '', suf = el.getAttribute('data-suf') || '';
+    if (isNaN(to) || reduce) return;
+    var start = null, dur = 1300;
+    function step(ts) {
+      if (!start) start = ts;
+      var k = Math.min(1, (ts - start) / dur);
+      var e = 1 - Math.pow(2, -10 * k);
+      el.textContent = pre + (to * (k === 1 ? 1 : e)).toFixed(dec) + suf;
+      if (k < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // ---------- Spotlight + tilt ----------
+  if (finePointer && !reduce) {
+    document.querySelectorAll('.spot').forEach(function (card) {
+      var tilt = card.tagName === 'ARTICLE';
+      card.addEventListener('pointermove', function (e) {
+        var r = card.getBoundingClientRect();
+        var x = e.clientX - r.left, y = e.clientY - r.top;
+        card.style.setProperty('--mx', x + 'px'); card.style.setProperty('--my', y + 'px');
+        if (tilt) {
+          var rx = ((y / r.height) - 0.5) * -4, ry = ((x / r.width) - 0.5) * 4;
+          card.style.transform = 'perspective(1100px) rotateX(' + rx.toFixed(2) + 'deg) rotateY(' + ry.toFixed(2) + 'deg) translateY(-4px)';
+        }
+      });
+      card.addEventListener('pointerleave', function () { card.style.transform = ''; });
+    });
+
+    // ---------- Magnetic buttons ----------
+    document.querySelectorAll('.magnetic').forEach(function (btn) {
+      var inner = btn.querySelector('.mag-inner');
+      btn.addEventListener('pointermove', function (e) {
+        var r = btn.getBoundingClientRect();
+        var dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+        btn.style.transform = 'translate(' + (dx * 0.18).toFixed(1) + 'px,' + (dy * 0.28).toFixed(1) + 'px)';
+        if (inner) inner.style.transform = 'translate(' + (dx * 0.08).toFixed(1) + 'px,' + (dy * 0.12).toFixed(1) + 'px)';
+      });
+      btn.addEventListener('pointerleave', function () { btn.style.transform = ''; if (inner) inner.style.transform = ''; });
+    });
+  }
+
+  // ---------- FAQ accordion ----------
+  var items = document.querySelectorAll('.faq-item');
+  function closeItem(it) {
+    var p = it.querySelector('.faq-panel'), b = it.querySelector('.faq-btn');
+    p.style.height = p.scrollHeight + 'px';
+    requestAnimationFrame(function () { p.style.height = '0px'; });
+    it.classList.remove('open'); b.setAttribute('aria-expanded', 'false');
+  }
+  function openItem(it) {
+    var p = it.querySelector('.faq-panel'), b = it.querySelector('.faq-btn');
+    p.style.height = p.scrollHeight + 'px';
+    it.classList.add('open'); b.setAttribute('aria-expanded', 'true');
+    var done = function (e) { if (e.propertyName === 'height' && it.classList.contains('open')) { p.style.height = 'auto'; } p.removeEventListener('transitionend', done); };
+    p.addEventListener('transitionend', done);
+  }
+  items.forEach(function (it) {
+    it.querySelector('.faq-btn').addEventListener('click', function () {
+      var isOpen = it.classList.contains('open');
+      items.forEach(function (o) { if (o !== it && o.classList.contains('open')) closeItem(o); });
+      isOpen ? closeItem(it) : openItem(it);
+      if (lenis) setTimeout(function () { lenis.resize(); }, 600);
+    });
+  });
+
+  // ---------- Form (email-first, no backend required) ----------
+  var form = document.getElementById('audit-form');
+  if (form) form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var input = document.getElementById('email'), msg = document.getElementById('form-msg');
+    var v = (input.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) {
+      msg.textContent = 'Please enter a valid work email.'; msg.className = 'min-h-[1.5em] text-sm text-brand-flare';
+      input.focus(); return;
+    }
+    // Hook your form endpoint here (e.g. fetch('/api/lead', {method:'POST', body: JSON.stringify({email:v})})).
+    var subject = encodeURIComponent('System audit request');
+    var body = encodeURIComponent('Hi Cyberbaze,\n\nI\'d like a system audit. Reply to: ' + v + '\n\nWhat\'s eating our team\'s week:\n');
+    window.location.href = 'mailto:info@cyberbaze.tech?subject=' + subject + '&body=' + body;
+    msg.textContent = 'Thanks. Your email app is opening so you can send the request. We reply within one business day.';
+    msg.className = 'min-h-[1.5em] text-sm text-emerald-400';
+  });
+
+  // ---------- Replay hero mark ----------
+  var replay = document.getElementById('replay');
+  var holder = document.getElementById('hero-mark');
+  if (replay && holder) replay.addEventListener('click', function () {
+    var svg = holder.querySelector('svg'); if (!svg) return;
+    var clone = svg.cloneNode(true); svg.replaceWith(clone);
+  });
+})();
+</script>
+</body>
+</html>
