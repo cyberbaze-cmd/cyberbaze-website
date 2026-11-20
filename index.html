@@ -9,7 +9,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='8' cy='8' r='6' fill='%23D9251D'/%3E%3Ccircle cx='24' cy='8' r='6' fill='%238F282B'/%3E%3Ccircle cx='8' cy='24' r='6' fill='%23B02722'/%3E%3Ccircle cx='24' cy='24' r='6' fill='%23D9251D'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <script>
   if (window.tailwind) tailwind.config = {
@@ -19,7 +19,8 @@
         fontFamily: {
           sans: ['Inter', 'system-ui', 'sans-serif'],
           display: ['"Plus Jakarta Sans"', 'Inter', 'system-ui', 'sans-serif'],
-          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace']
+          mono: ['"JetBrains Mono"', 'ui-monospace', 'monospace'],
+          serif: ['"Instrument Serif"', 'Georgia', 'serif']
         },
         colors: {
           brand: { DEFAULT: '#D9251D', ember: '#B02722', ox: '#8F282B', flare: '#FF5A4E' }
@@ -124,11 +125,21 @@
   .flow-dot { offset-path: none; animation: flow 3.6s cubic-bezier(.65,0,.35,1) infinite; }
   @keyframes flow { 0% { left: 0%; opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { left: 100%; opacity: 0; } }
 
+
+  /* Services stacking cards */
+  @media (min-width: 768px) { .svc-card { top: calc(96px + var(--i) * 16px); } }
+  .svc-inner { transform-origin: 50% 0%; will-change: transform; }
+  .svc-float { animation: svcFloat 6s ease-in-out infinite; animation-delay: var(--fd, 0s); }
+  @keyframes svcFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .svc-caret { animation: caret 1s steps(1) infinite; }
+  @keyframes caret { 50% { opacity: 0; } }
+  .svc-visual { transform: translateZ(0); }
+
   :focus-visible { outline: 2px solid #FF5A4E; outline-offset: 3px; border-radius: 6px; }
 
   @media (prefers-reduced-motion: reduce) {
     .reveal, .line-mask > span { opacity: 1 !important; transform: none !important; transition: none !important; }
-    .ticker-track, .flow-dot, .pulse-dot::after { animation: none !important; }
+    .ticker-track, .flow-dot, .pulse-dot::after, .svc-float, .svc-caret { animation: none !important; }
     .spot, .magnetic, .magnetic .mag-inner { transition: none !important; transform: none !important; }
   }
 </style>
@@ -158,12 +169,12 @@
       <svg class="w-7 h-7 transition-transform duration-700 ease-expo group-hover:rotate-90" aria-hidden="true"><use href="#cb-mark"/></svg>
       <span class="font-display font-semibold tracking-tight text-white text-[17px]">cyberbaze<span class="text-neutral-500 font-normal">.tech</span></span>
       <span class="hidden md:inline-flex items-center gap-2 ml-2 pl-3 border-l border-neutral-800 font-mono text-[11px] uppercase tracking-wider text-neutral-400">
-        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Available for Q4/Q1
+        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Taking new projects
       </span>
     </a>
 
     <nav aria-label="Main" class="hidden lg:flex items-center gap-1 text-sm">
-      <a href="#capabilities" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Capabilities</a>
+      <a href="#capabilities" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Services</a>
       <a href="#process" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Process</a>
       <a href="#results" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">Results</a>
       <a href="#faq" data-scroll class="px-3.5 py-2 rounded-full text-neutral-400 hover:text-white hover:bg-white/5 transition-colors">FAQ</a>
@@ -185,13 +196,13 @@
   <div id="drawer" class="lg:hidden fixed z-40 inset-x-0 top-16 sm:top-[72px] h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-72px)] bg-neutral-950 border-t border-neutral-800" aria-hidden="true">
     <div class="h-full flex flex-col justify-between px-6 py-10">
       <nav aria-label="Mobile" class="flex flex-col">
-        <a href="#capabilities" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:0">Capabilities <span class="font-mono text-xs text-neutral-500">01</span></a>
+        <a href="#capabilities" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:0">Services <span class="font-mono text-xs text-neutral-500">01</span></a>
         <a href="#process" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:1">Process <span class="font-mono text-xs text-neutral-500">02</span></a>
         <a href="#results" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:2">Results <span class="font-mono text-xs text-neutral-500">03</span></a>
         <a href="#faq" data-scroll class="d-item border-b border-neutral-800 py-5 font-display text-4xl font-semibold tracking-tight text-white flex justify-between items-center" style="--i:3">FAQ <span class="font-mono text-xs text-neutral-500">04</span></a>
       </nav>
       <div class="d-item flex flex-col gap-5" style="--i:4">
-        <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-neutral-400"><span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Available for Q4/Q1</span>
+        <span class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-neutral-400"><span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Taking new projects</span>
         <a href="#contact" data-scroll class="inline-flex justify-center items-center gap-2 rounded-full bg-brand text-white py-4 font-medium">Start a Project <i data-lucide="arrow-up-right" class="w-4 h-4"></i></a>
         <a href="mailto:info@cyberbaze.tech" class="text-center text-neutral-400 text-sm">info@cyberbaze.tech</a>
       </div>
@@ -212,9 +223,9 @@
         Autonomous Systems × Digital Product Design
       </span>
 
-      <h1 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.95] text-[42px] sm:text-6xl lg:text-[76px]">
-        <span class="line-mask"><span style="--d:80ms">Engineering AI automation</span></span>
-        <span class="line-mask"><span style="--d:160ms">&amp; modern digital products</span></span>
+      <h1 aria-label="Engineering AI automation and modern digital products for high-growth brands." class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.95] text-[42px] sm:text-6xl lg:text-[76px]">
+        <span class="line-mask"><span style="--d:80ms">Engineering AI automation</span></span><span class="sr-only"> </span>
+        <span class="line-mask"><span style="--d:160ms">&amp; modern digital products</span></span><span class="sr-only"> </span>
         <span class="line-mask"><span style="--d:240ms" class="text-neutral-500">for <span class="text-brand-flare">high-growth</span> brands.</span></span>
       </h1>
 
@@ -299,102 +310,166 @@
   </div>
 </section>
 
-<!-- ============ CAPABILITIES (BENTO) ============ -->
-<section id="capabilities" class="relative mx-auto max-w-7xl px-5 sm:px-8 py-24 sm:py-32">
-  <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-14">
-    <div class="flex flex-col gap-5">
-      <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">01 — Capabilities</span>
-      <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
-        <span class="line-mask"><span>One system.</span></span>
-        <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">Four ways in.</span></span>
+<!-- ============ SERVICES (STACKING CARDS) ============ -->
+<section id="capabilities" class="relative">
+  <div class="mx-auto max-w-7xl px-5 sm:px-8 pt-24 sm:pt-32 pb-10 sm:pb-14">
+    <div class="grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center gap-6 md:gap-8">
+      <span class="reveal text-sm text-neutral-400 md:justify-self-start">(Services)</span>
+      <h2 class="reveal-lines font-display font-semibold text-white tracking-[-0.035em] leading-[1] text-[44px] sm:text-6xl lg:text-[72px] md:text-center">
+        <span class="line-mask"><span>Services <em class="font-serif font-normal italic tracking-[-0.01em] text-[1.08em]">We Offer.</em></span></span>
       </h2>
+      <a href="#contact" data-scroll class="reveal group md:justify-self-end self-start md:self-auto inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-6 font-medium text-[15px] hover:bg-brand hover:text-white transition-colors duration-500" style="--d:120ms">
+        <span class="w-10 h-10 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>
+        Start a Project
+      </a>
     </div>
-    <p class="reveal max-w-md text-neutral-400 leading-relaxed" style="--d:160ms">Start with the layer that hurts most. Automation is the engine; interfaces, brand and growth carry it to market. Every layer connects to the next.</p>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-6 gap-4" data-stagger>
-    <!-- Card 1 AI -->
-    <article class="spot reveal md:col-span-4 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-9 flex flex-col gap-10 min-h-[420px] hover:border-neutral-700">
-      <div class="flex items-start justify-between gap-4">
-        <span class="w-12 h-12 rounded-2xl bg-brand/15 border border-brand/30 flex items-center justify-center"><i data-lucide="bot" class="w-5 h-5 text-brand-flare"></i></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Systems · 01</span>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="font-display text-3xl sm:text-4xl font-semibold tracking-tight text-white">AI Automation &amp; Workflows</h3>
-        <p class="text-neutral-400 leading-relaxed max-w-lg">Autonomous agents and custom business-process bots that qualify leads, read documents, answer support and update your systems, with a person approving anything that matters.</p>
-      </div>
-      <!-- mini workflow -->
-      <div class="mt-auto rounded-2xl border border-neutral-800 bg-neutral-950/60 p-4 sm:p-5">
-        <div class="relative flex items-center justify-between gap-2">
-          <div class="absolute left-6 right-6 top-1/2 h-px bg-neutral-800" aria-hidden="true"></div>
-          <span class="flow-dot absolute top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand-flare shadow-[0_0_14px_2px_rgba(255,90,78,.6)]" aria-hidden="true"></span>
-          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="inbox" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Trigger</span></span>
-          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="scan-text" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Enrich</span></span>
-          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-brand flex items-center justify-center shadow-[0_0_24px_-4px_rgba(217,37,29,.8)]"><i data-lucide="cpu" class="w-4 h-4 text-white"></i></span><span class="font-mono text-[10px] uppercase text-neutral-300">Agent</span></span>
-          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="user-check" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">Approve</span></span>
-          <span class="relative z-10 flex flex-col items-center gap-2"><span class="w-11 h-11 rounded-full bg-neutral-900 border border-neutral-700 flex items-center justify-center"><i data-lucide="database" class="w-4 h-4 text-neutral-300"></i></span><span class="font-mono text-[10px] uppercase text-neutral-500">CRM / ERP</span></span>
+  <div id="svc-stack" class="mx-auto max-w-7xl px-3 sm:px-8 pb-24 sm:pb-32 flex flex-col gap-4 md:gap-0">
+    <article class="svc-card md:sticky md:mb-[14vh]" style="--i:0" aria-labelledby="svc-t1">
+      <div class="svc-inner relative rounded-[28px] bg-[#121212] border border-neutral-800/70 p-3 sm:p-4 grid md:grid-cols-2 gap-3 md:gap-5 md:h-[min(640px,calc(100svh-140px))] overflow-hidden">
+        <div class="svc-text reveal flex flex-col justify-between gap-10 p-4 sm:p-6 lg:p-10">
+          <span class="font-display text-3xl sm:text-4xl font-medium text-white tracking-tight">01</span>
+          <div class="flex flex-col gap-5">
+            <h3 id="svc-t1" class="font-display text-2xl sm:text-[32px] leading-tight font-semibold tracking-tight text-white">AI Automation</h3>
+            <p class="text-neutral-500 text-base sm:text-lg leading-relaxed max-w-md">Agents and workflows that take repetitive work off your team: qualifying leads, reading documents, answering support and updating your systems.</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Includes"><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">AI Agents</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Workflow Automation</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Document AI</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Support Bots</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">CRM + ERP Integrations</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Internal Tools</li></ul>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+              <a href="#contact" data-scroll class="group inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-5 text-sm font-medium hover:bg-brand hover:text-white transition-colors duration-500"><span class="w-9 h-9 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>Start a project</a>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">4.5 min speed-to-lead · NexaPay</span>
+            </div>
+          </div>
         </div>
-      </div>
-    </article>
-
-    <!-- Card 2 Web -->
-    <article class="spot reveal md:col-span-2 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[420px] hover:border-neutral-700">
-      <div class="flex items-start justify-between gap-4">
-        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="layout-template" class="w-5 h-5 text-white"></i></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Surfaces · 02</span>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Modern Web &amp; UI/UX Design</h3>
-        <p class="text-neutral-400 leading-relaxed">Framer-grade interactive architecture, product UI and micro-interactions, built for sub-second loads and wired into your systems.</p>
-      </div>
-      <div class="mt-auto rounded-2xl border border-neutral-800 bg-neutral-950/60 p-4 flex flex-col gap-3">
-        <div class="flex items-center gap-1.5" aria-hidden="true"><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span></div>
-        <div class="h-2 w-2/3 rounded bg-neutral-800"></div>
-        <div class="h-2 w-1/2 rounded bg-neutral-800"></div>
-        <button type="button" class="ui-demo mt-1 self-start rounded-full bg-white text-neutral-950 text-xs font-medium px-4 py-2 transition-all duration-500 ease-expo hover:bg-brand hover:text-white hover:px-6">Hover me</button>
-        <span class="font-mono text-[10px] uppercase text-neutral-500">0.95s load · 99/100 score · CertiShield</span>
-      </div>
-    </article>
-
-    <!-- Card 3 Brand -->
-    <article class="spot reveal md:col-span-3 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[360px] hover:border-neutral-700">
-      <div class="flex items-start justify-between gap-4">
-        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="pen-tool" class="w-5 h-5 text-white"></i></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Signal · 03</span>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Brand Identity Systems</h3>
-        <p class="text-neutral-400 leading-relaxed max-w-md">Vector marks, editorial typography and brand playbooks that make a scaling company look as credible as the product it sells.</p>
-      </div>
-      <div class="mt-auto grid grid-cols-4 gap-2" aria-hidden="true">
-        <div class="aspect-square rounded-xl bg-brand flex items-end p-2 font-mono text-[9px] text-white/90">D9251D</div>
-        <div class="aspect-square rounded-xl bg-brand-ox flex items-end p-2 font-mono text-[9px] text-white/90">8F282B</div>
-        <div class="aspect-square rounded-xl bg-neutral-100 flex items-center justify-center font-display text-2xl font-bold text-neutral-950">Aa</div>
-        <div class="aspect-square rounded-xl border border-neutral-700 flex items-center justify-center"><svg class="w-3/5 h-3/5"><use href="#cb-mark"/></svg></div>
-      </div>
-    </article>
-
-    <!-- Card 4 Growth -->
-    <article class="spot reveal md:col-span-3 rounded-3xl border border-neutral-800 bg-neutral-900/40 p-7 sm:p-8 flex flex-col gap-8 min-h-[360px] hover:border-neutral-700">
-      <div class="flex items-start justify-between gap-4">
-        <span class="w-12 h-12 rounded-2xl bg-white/5 border border-neutral-700 flex items-center justify-center"><i data-lucide="trending-up" class="w-5 h-5 text-white"></i></span>
-        <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Signal · 04</span>
-      </div>
-      <div class="flex flex-col gap-4">
-        <h3 class="font-display text-2xl sm:text-3xl font-semibold tracking-tight text-white">Growth &amp; Performance Marketing</h3>
-        <p class="text-neutral-400 leading-relaxed max-w-md">Funnel architecture, conversion audits, search and AI-assisted outbound, reported against pipeline and acquisition cost, not vanity metrics.</p>
-      </div>
-      <div class="mt-auto flex items-end gap-6">
-        <div class="flex items-end gap-2 h-24" aria-hidden="true">
-          <span class="bar w-7 rounded-t-md bg-neutral-700" style="--h:12%"></span>
-          <span class="bar w-7 rounded-t-md bg-brand" style="--h:100%"></span>
+        <div class="svc-visual relative rounded-[20px] overflow-hidden min-h-[300px] sm:min-h-[400px] md:min-h-0" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-br from-brand via-[#B02722] to-brand-ox"></div>
+      <div class="absolute inset-0 bg-grid opacity-40" style="-webkit-mask-image:none;mask-image:none;background-size:40px 40px"></div>
+      <div class="absolute inset-0 flex items-center justify-center"><div class="w-[42%] aspect-square drop-shadow-[0_20px_40px_rgba(0,0,0,.35)]"><svg class="w-full h-full" style="filter:brightness(0) invert(1)" aria-hidden="true"><use href="#cb-mark"/></svg></div></div>
+      <div class="svc-float absolute left-[7%] top-[14%] rounded-2xl bg-black/35 backdrop-blur-md border border-white/15 px-4 py-3 text-white" style="--fd:0s"><span class="block font-mono text-[10px] uppercase tracking-wider text-white/60">Lead qualified</span><span class="font-display text-lg font-semibold">4.5 min</span></div>
+      <div class="svc-float absolute right-[7%] top-[38%] rounded-2xl bg-black/35 backdrop-blur-md border border-white/15 px-4 py-3 text-white" style="--fd:-2s"><span class="block font-mono text-[10px] uppercase tracking-wider text-white/60">Invoice → ERP</span><span class="font-display text-lg font-semibold">No typing</span></div>
+      <div class="svc-float absolute left-[12%] bottom-[12%] rounded-2xl bg-black/35 backdrop-blur-md border border-white/15 px-4 py-3 text-white" style="--fd:-4s"><span class="block font-mono text-[10px] uppercase tracking-wider text-white/60">Ticket resolved</span><span class="font-display text-lg font-semibold">38 sec</span></div>
         </div>
-        <div class="flex flex-col gap-1">
-          <span class="font-display text-4xl font-semibold text-white tracking-tight">&lt;5 → 34</span>
-          <span class="font-mono text-[10px] uppercase text-neutral-500">Qualified demos / month · CertiShield</span>
-        </div>
+        <div class="svc-shade pointer-events-none absolute inset-0 rounded-[28px] bg-black opacity-0"></div>
       </div>
     </article>
+    <article class="svc-card md:sticky md:mb-[14vh]" style="--i:1" aria-labelledby="svc-t2">
+      <div class="svc-inner relative rounded-[28px] bg-[#121212] border border-neutral-800/70 p-3 sm:p-4 grid md:grid-cols-2 gap-3 md:gap-5 md:h-[min(640px,calc(100svh-140px))] overflow-hidden">
+        <div class="svc-text reveal flex flex-col justify-between gap-10 p-4 sm:p-6 lg:p-10">
+          <span class="font-display text-3xl sm:text-4xl font-medium text-white tracking-tight">02</span>
+          <div class="flex flex-col gap-5">
+            <h3 id="svc-t2" class="font-display text-2xl sm:text-[32px] leading-tight font-semibold tracking-tight text-white">App &amp; Web UI/UX Design</h3>
+            <p class="text-neutral-500 text-base sm:text-lg leading-relaxed max-w-md">Interfaces that anticipate the next click. Every flow mapped, every screen designed with intent and built to convert.</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Includes"><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Product Design</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">User Flows</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Wireframes</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Prototyping</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Design Systems</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Usability Testing</li></ul>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+              <a href="#contact" data-scroll class="group inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-5 text-sm font-medium hover:bg-brand hover:text-white transition-colors duration-500"><span class="w-9 h-9 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>Start a project</a>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">+49% onboarding completion · NexaPay</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-visual relative rounded-[20px] overflow-hidden min-h-[300px] sm:min-h-[400px] md:min-h-0" aria-hidden="true">
+      <div class="absolute inset-0 bg-[#1a1a1a]"></div>
+      <div class="absolute inset-0 bg-grid opacity-50" style="-webkit-mask-image:none;mask-image:none;background-size:32px 32px"></div>
+      <div class="svc-par absolute left-[8%] top-[12%] w-[74%] rounded-xl bg-neutral-950 border border-neutral-700 shadow-2xl overflow-hidden">
+        <div class="flex items-center gap-1.5 px-3 py-2.5 border-b border-neutral-800"><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="w-2 h-2 rounded-full bg-neutral-700"></span><span class="ml-3 h-4 flex-1 rounded bg-neutral-900"></span></div>
+        <div class="p-5 flex flex-col gap-3"><div class="h-3 w-3/5 rounded bg-neutral-200"></div><div class="h-3 w-2/5 rounded bg-neutral-200"></div><div class="h-2 w-4/5 rounded bg-neutral-800 mt-2"></div><div class="h-2 w-3/5 rounded bg-neutral-800"></div><div class="mt-3 h-7 w-28 rounded-full bg-brand"></div>
+          <div class="grid grid-cols-3 gap-2 mt-4"><div class="aspect-[4/3] rounded-lg bg-neutral-900 border border-neutral-800"></div><div class="aspect-[4/3] rounded-lg bg-neutral-900 border border-neutral-800"></div><div class="aspect-[4/3] rounded-lg bg-neutral-900 border border-neutral-800"></div></div></div>
+      </div>
+      <div class="svc-par absolute right-[7%] bottom-[8%] w-[30%] aspect-[9/19] rounded-[22px] bg-neutral-950 border-[3px] border-neutral-700 shadow-2xl overflow-hidden p-2.5 flex flex-col gap-2" style="--pf:-1">
+        <div class="mx-auto h-1.5 w-10 rounded-full bg-neutral-800"></div><div class="h-16 rounded-lg bg-gradient-to-br from-brand to-brand-ox"></div><div class="h-2 w-3/4 rounded bg-neutral-300"></div><div class="h-2 w-1/2 rounded bg-neutral-700"></div>
+        <div class="mt-auto flex flex-col gap-1.5"><div class="h-6 rounded-md bg-neutral-900 border border-neutral-800"></div><div class="h-6 rounded-md bg-neutral-900 border border-neutral-800"></div><div class="h-7 rounded-full bg-white"></div></div>
+      </div>
+        </div>
+        <div class="svc-shade pointer-events-none absolute inset-0 rounded-[28px] bg-black opacity-0"></div>
+      </div>
+    </article>
+    <article class="svc-card md:sticky md:mb-[14vh]" style="--i:2" aria-labelledby="svc-t3">
+      <div class="svc-inner relative rounded-[28px] bg-[#121212] border border-neutral-800/70 p-3 sm:p-4 grid md:grid-cols-2 gap-3 md:gap-5 md:h-[min(640px,calc(100svh-140px))] overflow-hidden">
+        <div class="svc-text reveal flex flex-col justify-between gap-10 p-4 sm:p-6 lg:p-10">
+          <span class="font-display text-3xl sm:text-4xl font-medium text-white tracking-tight">03</span>
+          <div class="flex flex-col gap-5">
+            <h3 id="svc-t3" class="font-display text-2xl sm:text-[32px] leading-tight font-semibold tracking-tight text-white">Brand Design</h3>
+            <p class="text-neutral-500 text-base sm:text-lg leading-relaxed max-w-md">Identity systems that don’t just decorate. They make a scaling company look as credible as the product it sells.</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Includes"><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Logo Design</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Brand Identity</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Brand Strategy</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Typography</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Guidelines</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Motion</li></ul>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+              <a href="#contact" data-scroll class="group inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-5 text-sm font-medium hover:bg-brand hover:text-white transition-colors duration-500"><span class="w-9 h-9 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>Start a project</a>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">Identity redesign · NexaPay</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-visual relative rounded-[20px] overflow-hidden min-h-[300px] sm:min-h-[400px] md:min-h-0" aria-hidden="true">
+      <div class="absolute inset-0 bg-[#F4F3F0]"></div>
+      <div class="absolute inset-0 flex flex-col items-center justify-center gap-6 p-8">
+        <div class="flex items-center gap-4"><svg class="w-16 h-16 sm:w-20 sm:h-20" aria-hidden="true"><use href="#cb-mark"/></svg><span class="font-display text-4xl sm:text-5xl tracking-tight text-neutral-950"><b class="font-extrabold">CYBER</b><span class="font-light">BAZE</span></span></div>
+        <span class="font-mono text-[10px] tracking-[0.5em] text-neutral-500 -mt-3">INCORPORATED</span>
+      </div>
+      <div class="absolute left-4 right-4 bottom-4 grid grid-cols-5 gap-2">
+        <div class="aspect-square rounded-xl bg-brand flex items-end p-2 font-mono text-[9px] text-white">#D9251D</div>
+        <div class="aspect-square rounded-xl bg-brand-ox flex items-end p-2 font-mono text-[9px] text-white">#8F282B</div>
+        <div class="aspect-square rounded-xl bg-neutral-950 flex items-end p-2 font-mono text-[9px] text-white">#0A0A0A</div>
+        <div class="aspect-square rounded-xl bg-white border border-neutral-300 flex items-end p-2 font-mono text-[9px] text-neutral-500">#FFFFFF</div>
+        <div class="aspect-square rounded-xl border border-neutral-300 flex items-center justify-center font-display text-2xl font-bold text-neutral-950">Aa</div>
+      </div>
+        </div>
+        <div class="svc-shade pointer-events-none absolute inset-0 rounded-[28px] bg-black opacity-0"></div>
+      </div>
+    </article>
+    <article class="svc-card md:sticky md:mb-[14vh]" style="--i:3" aria-labelledby="svc-t4">
+      <div class="svc-inner relative rounded-[28px] bg-[#121212] border border-neutral-800/70 p-3 sm:p-4 grid md:grid-cols-2 gap-3 md:gap-5 md:h-[min(640px,calc(100svh-140px))] overflow-hidden">
+        <div class="svc-text reveal flex flex-col justify-between gap-10 p-4 sm:p-6 lg:p-10">
+          <span class="font-display text-3xl sm:text-4xl font-medium text-white tracking-tight">04</span>
+          <div class="flex flex-col gap-5">
+            <h3 id="svc-t4" class="font-display text-2xl sm:text-[32px] leading-tight font-semibold tracking-tight text-white">Mobile App &amp; Website Development</h3>
+            <p class="text-neutral-500 text-base sm:text-lg leading-relaxed max-w-md">Fast, reliable builds for web, iOS and Android, wired into your operations from day one.</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Includes"><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Websites</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">iOS + Android</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Web Apps</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">CMS</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Performance</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Integrations</li></ul>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+              <a href="#contact" data-scroll class="group inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-5 text-sm font-medium hover:bg-brand hover:text-white transition-colors duration-500"><span class="w-9 h-9 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>Start a project</a>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">0.95s page load · CertiShield</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-visual relative rounded-[20px] overflow-hidden min-h-[300px] sm:min-h-[400px] md:min-h-0" aria-hidden="true">
+      <div class="absolute inset-0 bg-[#0d0d0d]"></div>
+      <div class="absolute inset-0 bg-grid opacity-40" style="-webkit-mask-image:none;mask-image:none;background-size:32px 32px"></div>
+      <div class="svc-par absolute inset-x-[7%] top-[10%] bottom-[10%] rounded-xl border border-neutral-800 bg-neutral-950 overflow-hidden flex flex-col shadow-2xl">
+        <div class="flex items-center gap-2 px-4 py-2.5 border-b border-neutral-800 font-mono text-[11px] text-neutral-400"><span class="w-2 h-2 rounded-full bg-brand"></span>index.html<span class="ml-auto text-neutral-600">main</span></div>
+        <pre class="flex-1 p-5 font-mono text-[11px] sm:text-xs leading-6 text-neutral-500 overflow-hidden"><span class="text-neutral-600">01</span>  <span class="text-brand-flare">&lt;section</span> <span class="text-neutral-300">id</span>=<span class="text-emerald-400">"hero"</span><span class="text-brand-flare">&gt;</span>
+<span class="text-neutral-600">02</span>    <span class="text-brand-flare">&lt;h1&gt;</span><span class="text-white">Built to perform.</span><span class="text-brand-flare">&lt;/h1&gt;</span>
+<span class="text-neutral-600">03</span>    <span class="text-brand-flare">&lt;Agent</span> <span class="text-neutral-300">source</span>=<span class="text-emerald-400">"crm"</span> <span class="text-brand-flare">/&gt;</span>
+<span class="text-neutral-600">04</span>  <span class="text-brand-flare">&lt;/section&gt;</span>
+<span class="text-neutral-600">05</span>
+<span class="text-neutral-600">06</span>  <span class="text-sky-400">await</span> <span class="text-white">deploy</span>({ <span class="text-neutral-300">web</span>, <span class="text-neutral-300">ios</span>, <span class="text-neutral-300">android</span> })<span class="svc-caret inline-block w-[7px] h-[14px] bg-brand-flare align-middle ml-0.5"></span></pre>
+        <div class="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 py-3 border-t border-neutral-800 font-mono text-[11px]"><span class="text-emerald-400">✓ Deployed</span><span class="text-neutral-400">0.95s load</span><span class="text-neutral-400">99/100 performance</span></div>
+      </div>
+        </div>
+        <div class="svc-shade pointer-events-none absolute inset-0 rounded-[28px] bg-black opacity-0"></div>
+      </div>
+    </article>
+    <article class="svc-card md:sticky" style="--i:4" aria-labelledby="svc-t5">
+      <div class="svc-inner relative rounded-[28px] bg-[#121212] border border-neutral-800/70 p-3 sm:p-4 grid md:grid-cols-2 gap-3 md:gap-5 md:h-[min(640px,calc(100svh-140px))] overflow-hidden">
+        <div class="svc-text reveal flex flex-col justify-between gap-10 p-4 sm:p-6 lg:p-10">
+          <span class="font-display text-3xl sm:text-4xl font-medium text-white tracking-tight">05</span>
+          <div class="flex flex-col gap-5">
+            <h3 id="svc-t5" class="font-display text-2xl sm:text-[32px] leading-tight font-semibold tracking-tight text-white">Marketing</h3>
+            <p class="text-neutral-500 text-base sm:text-lg leading-relaxed max-w-md">Growth engines measured in pipeline, not likes: search, outbound and conversion work that lowers what each customer costs you.</p>
+            <ul class="flex flex-wrap gap-2" aria-label="Includes"><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">SEO</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Content</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">AI-assisted Outbound</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Paid Media</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">CRO</li><li class="rounded-full border border-neutral-800 bg-neutral-900/60 px-3 py-1.5 text-xs text-neutral-300">Analytics</li></ul>
+            <div class="flex flex-wrap items-center gap-x-5 gap-y-3 pt-2">
+              <a href="#contact" data-scroll class="group inline-flex items-center gap-3 rounded-full bg-white text-neutral-950 p-1.5 pr-5 text-sm font-medium hover:bg-brand hover:text-white transition-colors duration-500"><span class="w-9 h-9 rounded-full bg-neutral-950 text-white flex items-center justify-center transition-transform duration-500 ease-expo group-hover:rotate-[-45deg]"><i data-lucide="arrow-right" class="w-4 h-4"></i></span>Start a project</a>
+              <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-500">−38% acquisition cost · CertiShield</span>
+            </div>
+          </div>
+        </div>
+        <div class="svc-visual relative rounded-[20px] overflow-hidden min-h-[300px] sm:min-h-[400px] md:min-h-0" aria-hidden="true">
+      <div class="absolute inset-0 bg-gradient-to-br from-brand-ox via-[#3a1214] to-neutral-950"></div>
+      <div class="absolute inset-0 bg-grid opacity-40" style="-webkit-mask-image:none;mask-image:none;background-size:40px 40px"></div>
+      <div class="absolute left-[8%] top-[10%] flex flex-col gap-1 text-white"><span class="font-mono text-[10px] uppercase tracking-wider text-white/60">Qualified demos / month</span><span class="font-display text-5xl sm:text-6xl font-semibold tracking-tight">&lt;5 → 34</span></div>
+      <div class="absolute right-[8%] top-[12%] rounded-2xl bg-black/35 backdrop-blur-md border border-white/15 px-4 py-3 text-white"><span class="block font-mono text-[10px] uppercase tracking-wider text-white/60">Acquisition cost</span><span class="font-display text-lg font-semibold">−38%</span></div>
+      <div class="absolute left-[8%] right-[8%] bottom-[10%] h-[48%] flex items-end gap-[3%]" aria-hidden="true">
+        <span class="bar flex-1 rounded-t-md bg-white/15" style="--h:14%"></span><span class="bar flex-1 rounded-t-md bg-white/15" style="--h:22%"></span><span class="bar flex-1 rounded-t-md bg-white/20" style="--h:31%"></span><span class="bar flex-1 rounded-t-md bg-white/25" style="--h:45%"></span><span class="bar flex-1 rounded-t-md bg-white/30" style="--h:58%"></span><span class="bar flex-1 rounded-t-md bg-white/40" style="--h:74%"></span><span class="bar flex-1 rounded-t-md bg-brand-flare" style="--h:100%"></span>
+      </div>
+        </div>
+        <div class="svc-shade pointer-events-none absolute inset-0 rounded-[28px] bg-black opacity-0"></div>
+      </div>
+    </article>
+    
   </div>
 </section>
 
@@ -404,7 +479,7 @@
     <div class="flex flex-col gap-5 mb-16 sm:mb-20">
       <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">02 — Operating framework</span>
       <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
-        <span class="line-mask"><span>From audit</span></span>
+        <span class="line-mask"><span>From audit</span></span><span class="sr-only"> </span>
         <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">to autopilot.</span></span>
       </h2>
     </div>
@@ -454,7 +529,7 @@
       <div class="flex flex-col gap-5">
         <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">03 — Results</span>
         <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl lg:text-6xl">
-          <span class="line-mask"><span>Measured before.</span></span>
+          <span class="line-mask"><span>Measured before.</span></span><span class="sr-only"> </span>
           <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">Measured after.</span></span>
         </h2>
       </div>
@@ -516,7 +591,7 @@
     <div class="lg:col-span-4 flex flex-col gap-5">
       <span class="reveal font-mono text-xs uppercase tracking-[0.18em] text-brand-flare">04 — FAQ</span>
       <h2 class="reveal-lines font-display font-semibold text-white tracking-tightest leading-[0.98] text-4xl sm:text-5xl">
-        <span class="line-mask"><span>Good</span></span>
+        <span class="line-mask"><span>Good</span></span><span class="sr-only"> </span>
         <span class="line-mask"><span style="--d:80ms" class="text-neutral-500">questions.</span></span>
       </h2>
       <p class="reveal text-neutral-400 leading-relaxed max-w-sm" style="--d:160ms">Anything else? Write to <a href="mailto:info@cyberbaze.tech" class="u-link text-white">info@cyberbaze.tech</a>.</p>
@@ -627,7 +702,7 @@
       </div>
       <nav aria-label="Footer" class="lg:col-span-3 flex flex-col gap-3 text-sm">
         <span class="font-mono text-[11px] uppercase tracking-wider text-neutral-600 mb-1">Index</span>
-        <a href="#capabilities" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Capabilities</a>
+        <a href="#capabilities" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Services</a>
         <a href="#process" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Process</a>
         <a href="#results" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">Results</a>
         <a href="#faq" data-scroll class="u-link self-start text-neutral-400 hover:text-white transition-colors">FAQ</a>
@@ -743,9 +818,53 @@
       });
     }
   }
+  // ---------- Services: stacking cards ----------
+  var svcCards = Array.prototype.slice.call(document.querySelectorAll('.svc-card'));
+  var svcMQ = window.matchMedia('(min-width: 768px)');
+  function stackCards() {
+    if (!svcCards.length) return;
+    var vh = window.innerHeight, on = svcMQ.matches && !reduce;
+    var prog = svcCards.map(function (c, i) {
+      if (i === 0) return 0;
+      var top = c.getBoundingClientRect().top, stick = parseFloat(getComputedStyle(c).top) || 0;
+      return Math.min(1, Math.max(0, (vh - top) / Math.max(1, vh - stick)));
+    });
+    svcCards.forEach(function (c, i) {
+      var inner = c.querySelector('.svc-inner'), shade = c.querySelector('.svc-shade');
+      var depth = 0; for (var j = i + 1; j < prog.length; j++) depth += prog[j];
+      if (!on) { inner.style.transform = ''; shade.style.opacity = 0; return; }
+      inner.style.transform = 'scale(' + Math.max(0.82, 1 - depth * 0.045).toFixed(4) + ')';
+      shade.style.opacity = Math.min(0.6, depth * 0.32).toFixed(3);
+    });
+  }
+  var _onScroll = onScroll; onScroll = function () { _onScroll(); stackCards(); };
+
   if (lenis) lenis.on('scroll', onScroll); else window.addEventListener('scroll', onScroll, { passive: true });
   window.addEventListener('resize', onScroll);
   onScroll();
+
+  // ---------- Headline word split + wordmark ----------
+  document.querySelectorAll('[data-split]').forEach(function (h) {
+    var idx = 0;
+    (function walk(node) {
+      Array.prototype.slice.call(node.childNodes).forEach(function (n) {
+        if (n.nodeType === 3) {
+          var frag = document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function (part) {
+            if (!part) return;
+            if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(part)); return; }
+            var w = document.createElement('span'); w.className = 'line-mask'; w.style.display = 'inline-block'; w.style.verticalAlign = 'top';
+            var inner = document.createElement('span'); inner.textContent = part; inner.style.setProperty('--d', (80 + idx * 45) + 'ms'); idx++;
+            w.appendChild(inner); frag.appendChild(w);
+          });
+          n.parentNode.replaceChild(frag, n);
+        } else if (n.nodeType === 1) walk(n);
+      });
+    })(h);
+    h.classList.add('reveal-lines');
+  });
+  var word = document.getElementById('hero-word');
+  if (word) setTimeout(function () { word.style.transform = 'translateY(0)'; }, reduce ? 0 : 500);
 
   // ---------- Reveals ----------
   // auto-stagger reveals that share a parent
@@ -863,13 +982,16 @@
     msg.className = 'min-h-[1.5em] text-sm text-emerald-400';
   });
 
-  // ---------- Replay hero mark ----------
-  var replay = document.getElementById('replay');
-  var holder = document.getElementById('hero-mark');
-  if (replay && holder) replay.addEventListener('click', function () {
+  // ---------- Replay hero mark (click or hover, with cooldown) ----------
+  var holder = document.getElementById('hero-mark'), last = Date.now();
+  function replayMark() {
+    if (!holder || Date.now() - last < 600) return;
+    last = Date.now();
     var svg = holder.querySelector('svg'); if (!svg) return;
-    var clone = svg.cloneNode(true); svg.replaceWith(clone);
-  });
+    svg.replaceWith(svg.cloneNode(true));
+  }
+  var replayBtn = document.getElementById('replay');
+  if (replayBtn) replayBtn.addEventListener('click', function () { last = 0; replayMark(); });
 })();
 </script>
 </body>
